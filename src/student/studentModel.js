@@ -1,11 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var studentSchema = new Schema({
-    firstname: {
-        type: String,
-        required: true
-    },
-    lastname: {
+    nomeCompleto: {
         type: String,
         required: true
     },

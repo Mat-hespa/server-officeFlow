@@ -5,8 +5,7 @@ var encryptor = require('simple-encryptor')(key);
 module.exports.createStudentDBService = (studentDetails) => {
     return new Promise(function myFn(resolve, reject) {
         var studentModelData = new studentModel({
-            firstname: studentDetails.firstname,
-            lastname: studentDetails.lastname,
+            nomeCompleto: studentDetails.nomeCompleto,
             email: studentDetails.email,
             password: studentDetails.password
         });

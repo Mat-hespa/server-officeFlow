@@ -21,8 +21,13 @@ const createPessoaDBService = (pessoaDetails) => {
             estado: pessoaDetails.estado,
             bairro: pessoaDetails.bairro,
             logradouro: pessoaDetails.logradouro,
-            numeroCasa: pessoaDetails.numeroCasa
+            numeroCasa: pessoaDetails.numeroCasa,
+            empresa: pessoaDetails.empresa,
+            setorEmprego: pessoaDetails.setorEmprego,
+            cargoEmprego: pessoaDetails.cargoEmprego,
         });
+
+        console.log(pessoaModelData)
 
         pessoaModelData.save()
             .then(result => {
@@ -34,4 +39,29 @@ const createPessoaDBService = (pessoaDetails) => {
     });
 }
 
-module.exports = { createPessoaDBService };
+const getAllPessoasDBService = () => {
+    return pessoaModel.find({}).exec()
+        .then(pessoas => pessoas.map(pessoa => pessoa.toObject()));
+}
+
+const getAllPessoasNamesDBService = () => {
+    return pessoaModel.find({}, 'email').exec()
+        .then(pessoasNames => pessoasNames.map(pessoa => ({ email: pessoa.email })));
+}
+
+const getPessoaByEmailDBService = (email) => {
+    return pessoaModel.findOne({ email: email }).exec()
+        .then(pessoa => {
+            if (pessoa) {
+                return pessoa.toObject();
+            } else {
+                return null; // Retorna null se a pessoa não for encontrada
+            }
+        });
+}
+
+const updatePessoaByEmailDBService = (email, newData) => {
+    return pessoaModel.findOneAndUpdate({ email: email }, newData).exec();
+  }
+
+module.exports = { createPessoaDBService, getAllPessoasDBService, getAllPessoasNamesDBService, getPessoaByEmailDBService, updatePessoaByEmailDBService};

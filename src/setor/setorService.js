@@ -33,5 +33,10 @@ const getSetoresByEmpresa = (nomeEmpresa) => {
         });
 }
 
-module.exports = { createSetorDBService, getSetoresByEmpresa };
+const getAllSetoresDBService = () => {
+    return setorModel.find({}).exec()
+        .then(setores => setores.map(setor => setor.toObject()));
+}
+
+module.exports = { createSetorDBService, getSetoresByEmpresa, getAllSetoresDBService };
 

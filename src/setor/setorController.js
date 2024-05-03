@@ -26,5 +26,17 @@ const getSetoresByEmpresaControllerFn = async (req, res) => {
     }
 }
 
+// Função para buscar todas as empresas cadastradas
+const getAllSetoresObjectControllerFn = async (req, res) => {
+    try {
+        const setores = await setorService.getAllSetoresDBService();
+        console.log(setores);
+        res.send({ "status": true, "setores": setores });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ "status": false, "message": err.message });
+    }
+}
 
-module.exports = { createSetorControllerFn, getSetoresByEmpresaControllerFn };
+
+module.exports = { createSetorControllerFn, getSetoresByEmpresaControllerFn, getAllSetoresObjectControllerFn };

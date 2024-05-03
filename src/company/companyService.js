@@ -41,4 +41,9 @@ const getAllCompanyNamesDBService = () => {
         .then(companies => companies.map(company => ({ razaoSocial: company.razaoSocial })));
 }
 
-module.exports = { createCompanyDBService, getAllCompanyNamesDBService };
+const getAllCompaniesDBService = () => {
+    return companyModel.find({}).exec()
+        .then(companies => companies.map(company => company.toObject()));
+}
+
+module.exports = { createCompanyDBService, getAllCompanyNamesDBService, getAllCompaniesDBService};

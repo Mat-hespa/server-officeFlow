@@ -4,15 +4,12 @@ const Schema = mongoose.Schema;
 const pessoaSchema = new Schema({
     nomeCompleto: {
         type: String,
-        required: true
     },
     cpf: {
         type: String,
-        required: true
     },
     rg: {
         type: String,
-        required: true
     },
     ctps: {
         type: String
@@ -58,6 +55,15 @@ const pessoaSchema = new Schema({
         type: String
     },
     numeroCasa: {
+        type: String
+    },
+    empresa: {
+        type: String
+    },
+    setorEmprego: {
+        type: String
+    },
+    cargoEmprego: {
         type: String
     },
 });

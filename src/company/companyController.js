@@ -26,4 +26,16 @@ const getAllCompaniesControllerFn = async (req, res) => {
     }
 }
 
-module.exports = { createCompanyControllerFn, getAllCompaniesControllerFn}
+// Função para buscar todas as empresas cadastradas
+const getAllCompaniesObjectControllerFn = async (req, res) => {
+    try {
+        const companies = await companyService.getAllCompaniesDBService();
+        console.log(companies);
+        res.send({ "status": true, "companies": companies });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ "status": false, "message": err.message });
+    }
+}
+
+module.exports = { createCompanyControllerFn, getAllCompaniesControllerFn, getAllCompaniesObjectControllerFn}
