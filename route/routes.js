@@ -24,7 +24,9 @@ router.route('/setor/create').post(setorController.createSetorControllerFn);
 router.route('/setor/:nomeEmpresa').get(setorController.getSetoresByEmpresaControllerFn)
 router.route('/setores').get(setorController.getAllSetoresObjectControllerFn); // objeto inteiro de cada setor
 
+
 // PARTE DO LOGIN
 router.route('/student/login').post(studentController.loginUserControllerFn);
 router.route('/student/create').post(studentController.createStudentControllerFn);
+router.route('/student/:user/cargo').get(studentController.getCargoControllerFn)
 module.exports = router;

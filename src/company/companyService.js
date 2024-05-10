@@ -37,8 +37,8 @@ const createCompanyDBService = (companyDetails) => {
 
 // Função para buscar todas as empresas cadastradas no banco de dados
 const getAllCompanyNamesDBService = () => {
-    return companyModel.find({}, 'razaoSocial').exec()
-        .then(companies => companies.map(company => ({ razaoSocial: company.razaoSocial })));
+    return companyModel.find({}, 'nomeFantasia').exec()
+        .then(companies => companies.map(company => ({ nomeFantasia: company.nomeFantasia })));
 }
 
 const getAllCompaniesDBService = () => {

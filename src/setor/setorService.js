@@ -5,7 +5,8 @@ const createSetorDBService = (setorDetails) => {
         var setorModelData = new setorModel({
             empresa: setorDetails.empresa,
             nomeSetor: setorDetails.nomeSetor,
-            descricao: setorDetails.descricao,
+            isSubSetor: setorDetails.isSubSetor,
+            setorPai: setorDetails.setorPai,
             responsavel: setorDetails.responsavel,
             contato: setorDetails.contato,
             status: setorDetails.status,

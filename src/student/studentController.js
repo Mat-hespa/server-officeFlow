@@ -36,4 +36,17 @@ var loginUserControllerFn = async (req, res) => {
     }
 }
 
-module.exports = { createStudentControllerFn,loginUserControllerFn };
+const getCargoControllerFn = async (req, res) => {
+    try {
+        const email = req.params.user;
+        console.log(email)
+        const cargo = await studentService.getCargoByEmail(email);
+        res.send({ "status": true, "cargo": cargo });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "status": false, "message": "Internal server error" });
+    }
+}
+
+
+module.exports = { createStudentControllerFn,loginUserControllerFn, getCargoControllerFn };

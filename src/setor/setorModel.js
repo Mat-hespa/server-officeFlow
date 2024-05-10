@@ -10,9 +10,14 @@ var setorSchema = new Schema({
         type: String,
         required: true
     },
+    isSubSetor: {
+        type: String,
+    },
+    setorPai: {
+        type: String,
+    },
     descricao: {
         type: String,
-        required: true
     },
     responsavel: {
         type: String

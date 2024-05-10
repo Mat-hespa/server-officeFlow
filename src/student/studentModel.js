@@ -12,6 +12,11 @@ var studentSchema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    cargo: { // Adicione este campo
+        type: String,
+        required: true,
+        default: 'user' // Valor padrão para novos usuários
     }
 });
 module.exports = mongoose.model('student', studentSchema);

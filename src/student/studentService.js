@@ -1,17 +1,20 @@
-var studentModel = require('./studentModel');
-var key = '123456789trytryrtyr';
-var encryptor = require('simple-encryptor')(key);
+// studentService.js
 
-module.exports.createStudentDBService = (studentDetails) => {
-    return new Promise(function myFn(resolve, reject) {
-        var studentModelData = new studentModel({
+const studentModel = require('./studentModel');
+const key = '123456789trytryrtyr';
+const encryptor = require('simple-encryptor')(key);
+
+const createStudentDBService = (studentDetails) => {
+    return new Promise((resolve, reject) => {
+        const studentModelData = new studentModel({
             nomeCompleto: studentDetails.nomeCompleto,
             email: studentDetails.email,
-            password: studentDetails.password
+            password: studentDetails.password,
+            cargo: 'user' // Defina o cargo como 'user' por padrão
         });
 
         // Encrypt the password before saving
-        var encrypted = encryptor.encrypt(studentDetails.password);
+        const encrypted = encryptor.encrypt(studentDetails.password);
         studentModelData.password = encrypted;
 
         studentModelData.save()
@@ -23,12 +26,13 @@ module.exports.createStudentDBService = (studentDetails) => {
             });
     });
 }
-module.exports.loginuserDBService = (studentDetails) => {
-    return new Promise(function myFn(resolve, reject) {
+
+const loginuserDBService = (studentDetails) => {
+    return new Promise((resolve, reject) => {
         studentModel.findOne({ email: studentDetails.email })
             .then(result => {
                 if (result) {
-                    var decrypted = encryptor.decrypt(result.password);
+                    const decrypted = encryptor.decrypt(result.password);
                     if (decrypted == studentDetails.password) {
                         resolve({ status: true, msg: "Student Validated Successfully" });
                     } else {
@@ -43,3 +47,34 @@ module.exports.loginuserDBService = (studentDetails) => {
             });
     });
 }
+
+// const getCargoByEmail = (email) => {
+//     return new Promise((resolve, reject) => {
+//         studentModel.findOne({ email: email })
+//             .then(result => {
+//                 console.log(result)
+//                 if (result) {
+//                     resolve(result.cargo);
+//                 } else {
+//                     reject({ status: false, msg: "Student not found with given email" });
+//                 }
+//             })
+//             .catch(error => {
+//                 reject({ status: false, msg: "Error occurred while fetching student details" });
+//             });
+//     });
+// }
+
+const getCargoByEmail = (email) => {
+    return studentModel.find({ email: email }).exec()
+        .then(contas => {
+            console.log('Contas encontradas:', contas);
+            return contas[0].cargo;
+        })
+        .catch(error => {
+            console.error('Erro ao buscar contas:', error);
+            throw new Error('Erro ao buscar contas');
+        });
+}
+
+module.exports = { createStudentDBService, loginuserDBService, getCargoByEmail };
