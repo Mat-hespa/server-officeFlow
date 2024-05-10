@@ -39,5 +39,35 @@ const getAllSetoresDBService = () => {
         .then(setores => setores.map(setor => setor.toObject()));
 }
 
-module.exports = { createSetorDBService, getSetoresByEmpresa, getAllSetoresDBService };
+const getSetorByNameDBService = (name) => {
+    return setorModel.findOne({ nomeSetor: name }).exec()
+        .then(pessoa => {
+            if (pessoa) {
+                console.log(pessoa)
+                return pessoa.toObject();
+            } else {
+                return null; // Retorna null se a pessoa não for encontrada
+            }
+        });
+}
+
+const updateSetorByNameDBService = async (name, newData) => {
+    // Verifica se o setor está sendo atualizado para não ser mais um subsetor
+    const novoIsSubSetor = newData.isSubSetor;
+    console.log('novoÉsubsetor, ', novoIsSubSetor)
+    const wasSubsetor = await setorModel.findOne({ nomeSetor: name }).select('isSubSetor');
+    console.log('wasSubsetor, ', wasSubsetor)
+    const eraSubsetor = wasSubsetor.isSubSetor === 'sim';
+    console.log('eraSubSetor, ', eraSubsetor)
+
+    // Se o setor era um subsetor e agora não é mais, limpa o campo setorPai
+    if (eraSubsetor && novoIsSubSetor === 'nao') {
+        newData.setorPai = "";
+    }
+  
+    // Atualiza os dados do setor no banco de dados
+    return setorModel.findOneAndUpdate({ nomeSetor: name }, newData).exec();
+}
+
+module.exports = { createSetorDBService, getSetoresByEmpresa, getAllSetoresDBService, getSetorByNameDBService, updateSetorByNameDBService };
 

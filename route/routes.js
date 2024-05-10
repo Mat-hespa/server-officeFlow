@@ -23,6 +23,9 @@ router.route('/companiesObject').get(companyController.getAllCompaniesObjectCont
 router.route('/setor/create').post(setorController.createSetorControllerFn);
 router.route('/setor/:nomeEmpresa').get(setorController.getSetoresByEmpresaControllerFn)
 router.route('/setores').get(setorController.getAllSetoresObjectControllerFn); // objeto inteiro de cada setor
+router.route('/setores/:nomeSetor').get(setorController.getSetorByNameControllerFn);
+router.route('/setor/:nomeSetor/update').put(setorController.updateSetorByNameControllerFn);
+
 
 
 // PARTE DO LOGIN

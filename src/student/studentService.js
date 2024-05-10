@@ -68,7 +68,7 @@ const loginuserDBService = (studentDetails) => {
 const getCargoByEmail = (email) => {
     return studentModel.find({ email: email }).exec()
         .then(contas => {
-            console.log('Contas encontradas:', contas);
+            // console.log('Contas encontradas:', contas);
             return contas[0].cargo;
         })
         .catch(error => {

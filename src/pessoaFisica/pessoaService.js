@@ -27,7 +27,7 @@ const createPessoaDBService = (pessoaDetails) => {
             cargoEmprego: pessoaDetails.cargoEmprego,
         });
 
-        console.log(pessoaModelData)
+        // console.log(pessoaModelData)
 
         pessoaModelData.save()
             .then(result => {

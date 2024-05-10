@@ -4,9 +4,9 @@ var createStudentControllerFn = async (req, res) =>
 {
     try
     {
-    console.log(req.body);
+    // console.log(req.body);
     var status = await studentService.createStudentDBService(req.body);
-    console.log(status);
+    // console.log(status);
 
     if (status) {
         res.send({ "status": true, "message": "Student created successfully" });
@@ -16,7 +16,7 @@ var createStudentControllerFn = async (req, res) =>
 }
 catch(err)
 {
-    console.log(err);
+    // console.log(err);
 }
 }
 
@@ -31,7 +31,7 @@ var loginUserControllerFn = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.send({ "status": false, "message": error.msg });
     }
 }
@@ -39,11 +39,11 @@ var loginUserControllerFn = async (req, res) => {
 const getCargoControllerFn = async (req, res) => {
     try {
         const email = req.params.user;
-        console.log(email)
+        // console.log(email)
         const cargo = await studentService.getCargoByEmail(email);
         res.send({ "status": true, "cargo": cargo });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).send({ "status": false, "message": "Internal server error" });
     }
 }

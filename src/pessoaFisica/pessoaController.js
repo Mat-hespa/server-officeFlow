@@ -19,10 +19,10 @@ const createPessoaControllerFn = async (req, res) => {
 const getAllPessoasObjectControllerFn = async (req, res) => {
     try {
         const pessoas = await pessoaService.getAllPessoasDBService();
-        console.log(pessoas);
+        // console.log(pessoas);
         res.send({ "status": true, "pessoas": pessoas });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({ "status": false, "message": err.message });
     }
 }
@@ -30,10 +30,10 @@ const getAllPessoasObjectControllerFn = async (req, res) => {
 const getAllPessoasNameObjectControllerFn = async (req, res) => {
     try {
         const pessoasNames = await pessoaService.getAllPessoasNamesDBService();
-        console.log(pessoasNames);
+        // console.log(pessoasNames);
         res.send({ "status": true, "pessoasNames": pessoasNames });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({ "status": false, "message": err.message });
     }
 }
@@ -43,7 +43,7 @@ const getPessoaByEmailControllerFn = async (req, res) => {
     try {
         const email = req.params.email;
         const pessoa = await pessoaService.getPessoaByEmailDBService(email);
-        console.log(pessoa);
+        // console.log(pessoa);
         if (pessoa) {
             res.send({ "status": true, "pessoa": pessoa });
         } else {
@@ -66,7 +66,7 @@ const updatePessoaByEmailControllerFn = async (req, res) => {
   
       res.send({ "status": true, "message": "Pessoa editada com sucesso" });
     } catch (err) {
-      console.error(err);
+    //   console.error(err);
       res.status(500).send({ "status": false, "message": err.message });
     }
   }
