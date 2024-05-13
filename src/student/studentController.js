@@ -1,4 +1,6 @@
 var studentService = require('./studentService');
+const key = '123456789trytryrtyr';
+const encryptor = require('simple-encryptor')(key);
 
 var createStudentControllerFn = async (req, res) => 
 {
@@ -48,5 +50,24 @@ const getCargoControllerFn = async (req, res) => {
     }
 }
 
+const getStudentByEmailControllerFn = async (req, res) => {
+    try {
+        const email = req.params.user;
+        const student = await studentService.getStudentByEmailDBService(email);
+        
+        const decryptedPassword = encryptor.decrypt(student.password);
+        console.log(decryptedPassword)
+        const passwordLength = decryptedPassword.length;
+        console.log(passwordLength)
 
-module.exports = { createStudentControllerFn,loginUserControllerFn, getCargoControllerFn };
+        student.password = passwordLength
+
+
+        res.send({ "status": true, "student": student});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ "status": false, "message": "Internal server error" });
+    }
+}
+
+module.exports = { createStudentControllerFn,loginUserControllerFn, getCargoControllerFn, getStudentByEmailControllerFn};

@@ -77,4 +77,8 @@ const getCargoByEmail = (email) => {
         });
 }
 
-module.exports = { createStudentDBService, loginuserDBService, getCargoByEmail };
+const getStudentByEmailDBService = (email) => {
+    return studentModel.findOne({ email: email }).exec();
+}
+
+module.exports = { createStudentDBService, loginuserDBService, getCargoByEmail, getStudentByEmailDBService };
