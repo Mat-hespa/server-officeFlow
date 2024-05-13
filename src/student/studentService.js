@@ -81,4 +81,8 @@ const getStudentByEmailDBService = (email) => {
     return studentModel.findOne({ email: email }).exec();
 }
 
-module.exports = { createStudentDBService, loginuserDBService, getCargoByEmail, getStudentByEmailDBService };
+const updatePasswordByEmail = (email, newPassword) => {
+    return studentModel.findOneAndUpdate({ email: email }, { password: newPassword }).exec();
+}
+
+module.exports = { createStudentDBService, loginuserDBService, getCargoByEmail, getStudentByEmailDBService, updatePasswordByEmail };

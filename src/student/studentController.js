@@ -70,4 +70,25 @@ const getStudentByEmailControllerFn = async (req, res) => {
     }
 }
 
-module.exports = { createStudentControllerFn,loginUserControllerFn, getCargoControllerFn, getStudentByEmailControllerFn};
+const changePasswordControllerFn = async (req, res) => {
+    try {
+        const { email, newPassword } = req.body;
+
+        // Verificar se o usuário existe
+        const student = await studentService.getStudentByEmailDBService(email);
+        if (!student) {
+            return res.status(404).send({ "status": false, "message": "Usuário não encontrado" });
+        }
+
+        // Atualizar a senha no banco de dados
+        const encryptedNewPassword = encryptor.encrypt(newPassword);
+        await studentService.updatePasswordByEmail(email, encryptedNewPassword);
+
+        res.send({ "status": true, "message": "Senha atualizada com sucesso" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ "status": false, "message": "Erro interno do servidor" });
+    }
+}
+
+module.exports = { createStudentControllerFn,loginUserControllerFn, getCargoControllerFn, getStudentByEmailControllerFn, changePasswordControllerFn };

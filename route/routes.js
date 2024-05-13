@@ -33,5 +33,6 @@ router.route('/student/login').post(studentController.loginUserControllerFn);
 router.route('/student/create').post(studentController.createStudentControllerFn);
 router.route('/student/:user/cargo').get(studentController.getCargoControllerFn)
 router.route('/student/:user/').get(studentController.getStudentByEmailControllerFn)
+router.route('/student/change-password').post(studentController.changePasswordControllerFn)
 
 module.exports = router;
