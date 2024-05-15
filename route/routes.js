@@ -25,7 +25,7 @@ router.route('/setor/:nomeEmpresa').get(setorController.getSetoresByEmpresaContr
 router.route('/setores').get(setorController.getAllSetoresObjectControllerFn); // objeto inteiro de cada setor
 router.route('/setores/:nomeSetor').get(setorController.getSetorByNameControllerFn);
 router.route('/setor/:nomeSetor/update').put(setorController.updateSetorByNameControllerFn);
-
+router.route('/setore/tree').get(setorController.getSetoresTreeControllerFn);
 
 
 // PARTE DO LOGIN

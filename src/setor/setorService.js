@@ -69,5 +69,43 @@ const updateSetorByNameDBService = async (name, newData) => {
     return setorModel.findOneAndUpdate({ nomeSetor: name }, newData).exec();
 }
 
-module.exports = { createSetorDBService, getSetoresByEmpresa, getAllSetoresDBService, getSetorByNameDBService, updateSetorByNameDBService };
+const getSetoresTree = () => {
+    return setorModel.find({}).exec()
+        .then(setores => {
+            const organizeSetoresInTree = (setores) => {
+                let setorMap = new Map();
+
+                // Inicializa cada setor no mapa
+                setores.forEach(setor => {
+                    setor.subSetores = [];
+                    setorMap.set(setor.nomeSetor, setor);
+                });
+
+                // Constrói a árvore de setores
+                let tree = [];
+                setores.forEach(setor => {
+                    if (setor.isSubSetor === 'sim' && setor.setorPai) {
+                        setorMap.get(setor.setorPai).subSetores.push(setor);
+                    } else {
+                        tree.push(setor);
+                    }
+                });
+
+                return tree;
+            };
+
+            const tree = organizeSetoresInTree(setores);
+            const extractSetorNames = (setor) => ({
+                nomeSetor: setor.nomeSetor,
+                subSetores: setor.subSetores.map(extractSetorNames)
+            });
+            return tree.map(extractSetorNames);
+        })
+        .catch(error => {
+            console.error('Erro ao buscar setores:', error);
+            throw new Error('Erro ao buscar setores');
+        });
+}
+
+module.exports = { createSetorDBService, getSetoresByEmpresa, getAllSetoresDBService, getSetorByNameDBService, updateSetorByNameDBService, getSetoresTree};
 

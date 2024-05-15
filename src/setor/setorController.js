@@ -74,5 +74,15 @@ const updateSetorByNameControllerFn = async (req, res) => {
     }
   }
 
+  const getSetoresTreeControllerFn = async (req, res) => {
+    try {
+        const setoresTree = await setorService.getSetoresTree();
+        res.send({ "status": true, "setores": setoresTree });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ "status": false, "message": err.message });
+    }
+}
 
-module.exports = { createSetorControllerFn, getSetoresByEmpresaControllerFn, getAllSetoresObjectControllerFn, getSetorByNameControllerFn, updateSetorByNameControllerFn };
+
+module.exports = { createSetorControllerFn, getSetoresByEmpresaControllerFn, getAllSetoresObjectControllerFn, getSetorByNameControllerFn, updateSetorByNameControllerFn, getSetoresTreeControllerFn };
