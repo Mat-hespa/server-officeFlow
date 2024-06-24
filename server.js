@@ -2,19 +2,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./route/routes');
+require('dotenv').config();
 
 const app = express();
-const PORT = 9992;
+const PORT = process.env.PORT || 9992;
 
-// Permitir requisições do http://localhost:4200
+// Permitir requisições do frontend
 app.use(cors({
-  origin: "http://localhost:4200"
+    origin: process.env.CORS_ORIGIN
 }));
 
 app.use(express.json());
 app.use(routes);
 
-mongoose.connect("mongodb://localhost:27017/abc", { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 
