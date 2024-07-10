@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 9992;
 
 // Permitir requisições do frontend
 app.use(cors({
-    origin: [process.env.CORS_ORIGIN. process.env.CORS_ORIGIN_ANDROID]
+    origin: [process.env.CORS_ORIGIN, process.env.CORS_ORIGIN_ANDROID]
 }));
 
 app.use(express.json());
