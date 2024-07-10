@@ -27,8 +27,7 @@ var loginUserControllerFn = async (req, res) => {
     try {
         result = await studentService.loginuserDBService(req.body);
         if (result.status) {
-            const token = generateToken(req.body.email); // Função para gerar o token JWT
-            res.send({ "status": true, "message": token });
+            res.send({ "status": true, "message": result.msg });
         } else {
             res.send({ "status": false, "message": result.msg });
         }
@@ -38,15 +37,6 @@ var loginUserControllerFn = async (req, res) => {
         res.send({ "status": false, "message": error.msg });
     }
 }
-
-function generateToken(email) {
-    // Aqui você deve implementar a lógica para gerar o token JWT usando uma biblioteca como jsonwebtoken
-    // Exemplo simples:
-    const jwt = require('jsonwebtoken');
-    const secret = 'seu-segredo-secreto'; // Substitua por uma chave segura
-    return jwt.sign({ email }, secret, { expiresIn: '1h' }); // Expira em 1 hora, ajuste conforme necessário
-}
-
 
 const getCargoControllerFn = async (req, res) => {
     try {
