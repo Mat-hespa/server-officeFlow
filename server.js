@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./route/routes');
-const { setupSocketIO } = require('./documentoController'); // Importe o método de setupSocketIO
+const { setupSocketIO } = require('./src/documents/documentoController'); // Importe o método de setupSocketIO
 
 require('dotenv').config();
 
