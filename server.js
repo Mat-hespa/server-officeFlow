@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./route/routes');
+const { setupSocketIO } = require('./documentoController'); // Importe o método de setupSocketIO
+
 require('dotenv').config();
 
 const app = express();
@@ -28,4 +30,5 @@ db.once('open', () => {
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
+    setupSocketIO(server);
 });
