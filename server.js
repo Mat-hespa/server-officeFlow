@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./route/routes');
-const { setupSocketIO } = require('./src/documents/documentoController'); // Importe o método de setupSocketIO
+const { setupSocketIO } = require('./documentoController'); // Importe o método de setupSocketIO
 
 require('dotenv').config();
 
@@ -27,8 +27,11 @@ db.on('error', (error) => {
 
 db.once('open', () => {
     console.log('Successfully connected to DB');
-    app.listen(PORT, () => {
+    
+    const server = app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
+
+    // Configurar o Socket.io
     setupSocketIO(server);
 });
