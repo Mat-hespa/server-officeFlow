@@ -33,6 +33,9 @@ router.route('/student/login').post(studentController.loginUserControllerFn);
 router.route('/student/create').post(studentController.createStudentControllerFn);
 router.route('/student/:user/cargo').get(studentController.getCargoControllerFn)
 router.route('/student/:user/').get(studentController.getStudentByEmailControllerFn)
-router.route('/student/change-password').post(studentController.changePasswordControllerFn)
+router.route('/student/change-password').post(studentController.changePasswordControllerFn);
+
+// PARTE DOS DOCUMENTOS
+router.route('/api/documentos').post(studentController.getDocumentsControllerFn);
 
 module.exports = router;
