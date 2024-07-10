@@ -3,6 +3,8 @@ var studentController = require('../src/student/studentController');
 var companyController = require('../src/company/companyController');
 var setorController = require('../src/setor/setorController')
 var pessoaController = require('../src/pessoaFisica/pessoaController')
+var documentController = require('../src/documents/documentoController')
+
 const router = express.Router();
 
 // PARTE DE PESSOAS FISICAS
@@ -36,6 +38,6 @@ router.route('/student/:user/').get(studentController.getStudentByEmailControlle
 router.route('/student/change-password').post(studentController.changePasswordControllerFn);
 
 // PARTE DOS DOCUMENTOS
-router.route('/api/documentos').post(studentController.getDocumentsControllerFn);
+router.route('/api/documentos').post(documentController.createDocumentoControllerFn);
 
 module.exports = router;
