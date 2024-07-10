@@ -7,17 +7,23 @@ const Documento = require('./documentoModel');
 // Configuração do Socket.io no seu backend
 let io;
 
-const setupSocketIO = (server) => {
-    io = new Server(server);
+function setupSocketIO(server) {
+    const io = socketIO(server);
+
+    io.use((socket, next) => {
+        // Middleware CORS para Socket.io
+        const origin = socket.handshake.headers.origin;
+        if (origin === process.env.CORS_ORIGIN || origin === process.env.CORS_ORIGIN_ANDROID) {
+            return next();
+        }
+        return next(new Error('Not allowed by CORS'));
+    });
 
     io.on('connection', (socket) => {
-        console.log('Cliente conectado ao Socket.io');
-
-        socket.on('disconnect', () => {
-            console.log('Cliente desconectado do Socket.io');
-        });
+        console.log('Novo cliente conectado');
+        // Lógica para lidar com eventos de socket
     });
-};
+}
 
 const createDocumentoControllerFn = async (req, res) => {
     try {

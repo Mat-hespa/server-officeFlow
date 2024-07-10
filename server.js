@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('http');
+const socketIO = require('socket.io');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./route/routes');
@@ -28,10 +30,18 @@ db.on('error', (error) => {
 db.once('open', () => {
     console.log('Successfully connected to DB');
     
-    const server = app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+    const server = http.createServer(app); // Crie um servidor HTTP separado
+    const io = socketIO(server, {
+        cors: {
+            origin: [process.env.CORS_ORIGIN, process.env.CORS_ORIGIN_ANDROID],
+            methods: ["GET", "POST"]
+        }
     });
 
     // Configurar o Socket.io
-    setupSocketIO(server);
+    setupSocketIO(io);
+
+    server.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
 });
