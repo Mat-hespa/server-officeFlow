@@ -1,32 +1,31 @@
 const Documento = require('./documentoModel');
-const fs = require('fs'); // Importar o módulo 'fs' para manipulação de arquivos
+const fs = require('fs');
+const path = require('path');
 
 const createDocumentoDBService = (documentoDetails, documentoFile) => {
     return new Promise((resolve, reject) => {
-        // Extrair dados do documento
-        const { titulo, descricao, destinatario } = documentoDetails;
+        const { registrant, recipient, description } = documentoDetails;
 
-        // Criar um novo documento com os dados recebidos
-        const novoDocumento = new Documento({
-            titulo,
-            descricao,
-            destinatario
-        });
+        // Salvar o arquivo no servidor
+        const uploadDir = 'uploads';
+        const nomeArquivo = `${Date.now()}-${documentoFile.originalname}`;
+        const caminhoArquivo = path.join(uploadDir, nomeArquivo);
 
-        // Salvar o arquivo no servidor (ou no seu armazenamento escolhido)
-        // Supondo que 'documentoFile' seja o arquivo enviado no FormData
-        const nomeArquivo = `${Date.now()}-${documentoFile.name}`;
-        const caminhoArquivo = `uploads/${nomeArquivo}`; // Defina o caminho onde o arquivo será salvo
-
-        // Salvar o arquivo localmente (exemplo simples)
-        fs.writeFile(caminhoArquivo, documentoFile.data, err => {
+        fs.writeFile(caminhoArquivo, documentoFile.buffer, err => {
             if (err) {
                 console.error('Erro ao salvar arquivo:', err);
                 reject(false);
                 return;
             }
 
-            // Se o arquivo foi salvo com sucesso, salvar o documento no MongoDB
+            // Se o arquivo foi salvo com sucesso, salvar os dados no MongoDB
+            const novoDocumento = new Documento({
+                registrant,
+                recipient,
+                description,
+                documentFile: caminhoArquivo // Salva o caminho do arquivo no MongoDB
+            });
+
             novoDocumento.save()
                 .then(result => {
                     resolve(true);

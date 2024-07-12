@@ -2,21 +2,21 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const documentoSchema = new Schema({
-    titulo: {
+    registrant: {
         type: String,
         required: true
     },
-    descricao: {
+    recipient: {
+        type: String,
+        required: true
+    },
+    description: {
         type: String
     },
-    destinatario: {
-        type: String,
+    documentFile: {
+        type: String, // Vamos armazenar o caminho do arquivo no MongoDB
         required: true
     },
-    dataCadastro: {
-        type: Date,
-        default: Date.now
-    }
 });
 
 module.exports = mongoose.model('Documento', documentoSchema);
