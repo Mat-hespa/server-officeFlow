@@ -4,30 +4,38 @@ const path = require('path');
 
 const createDocumentoDBService = (documentoDetails, documentoFile) => {
     return new Promise((resolve, reject) => {
+        console.log('Documento recebido para cadastro:', documentoDetails);
+        console.log('Arquivo recebido para cadastro:', documentoFile);
+
         const { registrant, recipient, description } = documentoDetails;
 
-        // Salvar o arquivo no servidor
-        const uploadDir = 'uploads';
-        const nomeArquivo = `${Date.now()}-${documentoFile.originalname}`;
-        const caminhoArquivo = path.join(uploadDir, nomeArquivo);
+        const novoDocumento = new Documento({
+            registrant,
+            recipient,
+            description
+        });
 
-        fs.writeFile(caminhoArquivo, documentoFile.buffer, err => {
+        // Salvar o arquivo no servidor (ou no seu armazenamento escolhido)
+        // Supondo que 'documentoFile' seja o arquivo enviado no FormData
+        const nomeArquivo = `${Date.now()}-${documentoFile.name}`;
+        const caminhoArquivo = `uploads/${nomeArquivo}`; // Defina o caminho onde o arquivo será salvo
+
+        // Salvar o arquivo localmente (exemplo simples)
+        fs.writeFile(caminhoArquivo, documentoFile.data, err => {
             if (err) {
                 console.error('Erro ao salvar arquivo:', err);
                 reject(false);
                 return;
             }
 
-            // Se o arquivo foi salvo com sucesso, salvar os dados no MongoDB
-            const novoDocumento = new Documento({
-                registrant,
-                recipient,
-                description,
-                documentFile: caminhoArquivo // Salva o caminho do arquivo no MongoDB
-            });
+            console.log('Arquivo salvo com sucesso:', caminhoArquivo);
+
+            // Se o arquivo foi salvo com sucesso, salvar o documento no MongoDB
+            novoDocumento.documentFile = caminhoArquivo; // Adicionando o caminho do arquivo ao documento
 
             novoDocumento.save()
                 .then(result => {
+                    console.log('Documento cadastrado com sucesso:', result);
                     resolve(true);
                 })
                 .catch(error => {
@@ -37,5 +45,6 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
         });
     });
 }
+
 
 module.exports = { createDocumentoDBService };
