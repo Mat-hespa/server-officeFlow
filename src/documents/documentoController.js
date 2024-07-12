@@ -2,7 +2,10 @@ const documentoService = require('./documentoService');
 
 const createDocumentoControllerFn = async (req, res) => {
     try {
+        console.log('Documento recebido para cadastro:', req.body);
+
         const status = await documentoService.createDocumentoDBService(req.body);
+        
         if (status) {
             res.send({ "status": true, "message": "Documento cadastrado com sucesso" });
         } else {
