@@ -1,55 +1,59 @@
-const aws = require('aws-sdk');
+const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-require('dotenv').config();
+const { v4: uuidv4 } = require('uuid');
+const mongoose = require('mongoose');
+const Documento = require('./documentoModel'); // Modelo do documento
 
-aws.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION
+// Configuração do AWS S3
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  region: process.env.AWS_REGION
 });
 
-const s3 = new aws.S3();
-
+// Configuração do multer para upload para S3
 const upload = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: process.env.AWS_BUCKET_NAME,
-        acl: 'public-read',
-        metadata: function (req, file, cb) {
-            cb(null, { fieldName: file.fieldname });
-        },
-        key: function (req, file, cb) {
-            cb(null, Date.now().toString() + '-' + file.originalname);
-        }
-    })
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.AWS_S3_BUCKET_NAME,
+    acl: 'public-read', // Permissão de leitura pública
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      const ext = file.originalname.split('.').pop(); // Extensão do arquivo
+      const filename = `${uuidv4()}.${ext}`; // Nome único do arquivo
+      cb(null, filename);
+    }
+  })
 });
 
-const documentoService = require('./documentoService');
-
-const createDocumentoControllerFn = async (req, res) => {
+// Controlador para criar um documento
+async function createDocumentoControllerFn(req, res) {
   try {
-    console.log('Documento recebido para cadastro:', req.body);
+    const { registrant, recipient, description } = req.body;
+    const fileUrl = req.file.location; // URL do arquivo no S3
 
-    // Verificando se o arquivo foi enviado corretamente
-    if (!req.file || !req.file.location) {
-      throw new Error('Arquivo inválido ou não enviado.');
-    }
+    // Cria o documento no MongoDB
+    const novoDocumento = new Documento({
+      registrant,
+      recipient,
+      description,
+      fileUrl
+    });
 
-    const documentoFile = req.file;
-    const documentoDetails = req.body;
+    // Salva o documento no MongoDB
+    const documentoSalvo = await novoDocumento.save();
 
-    const status = await documentoService.createDocumentoDBService(documentoDetails, documentoFile);
-
-    if (status) {
-      res.send({ "status": true, "message": "Documento cadastrado com sucesso" });
-    } else {
-      res.send({ "status": false, "message": "Erro ao cadastrar documento" });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ "status": false, "message": err.message });
+    res.status(201).json({ message: 'Documento cadastrado com sucesso!', documento: documentoSalvo });
+  } catch (error) {
+    console.error('Erro ao cadastrar documento:', error);
+    res.status(500).json({ message: 'Erro ao cadastrar documento.' });
   }
 }
 
-module.exports = { createDocumentoControllerFn, upload };
+module.exports = {
+  upload,
+  createDocumentoControllerFn
+};

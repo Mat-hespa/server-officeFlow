@@ -1,22 +1,12 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const documentoSchema = new Schema({
-    registrant: {
-        type: String,
-        required: true
-    },
-    recipient: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String
-    },
-    documentFile: {
-        type: String,
-        required: true
-    },
-});
+const documentoSchema = new mongoose.Schema({
+  registrant: { type: String, required: true },
+  recipient: { type: String, required: true },
+  description: { type: String },
+  fileUrl: { type: String, required: true }
+}, { timestamps: true });
 
-module.exports = mongoose.model('Documento', documentoSchema);
+const Documento = mongoose.model('Documento', documentoSchema);
+
+module.exports = Documento;
