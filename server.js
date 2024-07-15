@@ -13,7 +13,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use('/uploads', express.static('uploads')); // Para servir os arquivos enviados
 app.use(routes);
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
