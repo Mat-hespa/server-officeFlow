@@ -4,6 +4,7 @@ var companyController = require('../src/company/companyController');
 var setorController = require('../src/setor/setorController')
 var pessoaController = require('../src/pessoaFisica/pessoaController')
 var documentController = require('../src/documents/documentoController')
+const { createDocumentoControllerFn, upload } = require('../controllers/documentoController');
 
 const router = express.Router();
 
@@ -38,6 +39,6 @@ router.route('/student/:user/').get(studentController.getStudentByEmailControlle
 router.route('/student/change-password').post(studentController.changePasswordControllerFn);
 
 // PARTE DOS DOCUMENTOS
-router.route('/api/documentos').post(documentController.createDocumentoControllerFn);
+router.route('/api/documentos').post(upload.single('documentFile'), documentController.createDocumentoControllerFn);
 
 module.exports = router;

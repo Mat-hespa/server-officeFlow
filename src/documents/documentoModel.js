@@ -14,7 +14,7 @@ const documentoSchema = new Schema({
         type: String
     },
     documentFile: {
-        type: String, // Vamos armazenar o caminho do arquivo no MongoDB
+        type: String,
         required: true
     },
 });
