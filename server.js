@@ -15,6 +15,16 @@ app.use(cors({
 app.use(express.json());
 app.use(routes);
 
+const s3 = new AWS.S3();
+
+s3.listBuckets((err, data) => {
+  if (err) {
+    console.error('Erro ao listar buckets:', err);
+  } else {
+    console.log('Buckets disponíveis:', data.Buckets);
+  }
+});
+
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
