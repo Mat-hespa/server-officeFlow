@@ -4,7 +4,7 @@ var companyController = require('../src/company/companyController');
 var setorController = require('../src/setor/setorController')
 var pessoaController = require('../src/pessoaFisica/pessoaController')
 var documentController = require('../src/documents/documentoController')
-const { createDocumentoControllerFn, upload } = require('../controllers/documentoController');
+const { createDocumentoControllerFn, upload } = require('../src/documents/documentoController');
 
 const router = express.Router();
 
