@@ -1,5 +1,4 @@
 const Documento = require('./documentoModel');
-const fs = require('fs');
 
 const createDocumentoDBService = (documentoDetails, documentoFile) => {
     return new Promise((resolve, reject) => {
@@ -9,7 +8,7 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
             registrant,
             recipient,
             description,
-            documentFile: documentoFile.path // Armazenar o caminho do arquivo
+            documentFile: documentoFile.location // URL do arquivo no S3
         });
 
         novoDocumento.save()
