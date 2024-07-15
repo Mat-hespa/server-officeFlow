@@ -4,6 +4,9 @@ const cors = require('cors');
 const routes = require('./route/routes');
 require('dotenv').config();
 
+const AWS = require('aws-sdk'); // retirar
+
+
 const app = express();
 const PORT = process.env.PORT || 9992;
 
@@ -15,9 +18,9 @@ app.use(cors({
 app.use(express.json());
 app.use(routes);
 
-const s3 = new AWS.S3();
+const s3 = new AWS.S3(); // retirar
 
-s3.listBuckets((err, data) => {
+s3.listBuckets((err, data) => { // retirar
   if (err) {
     console.error('Erro ao listar buckets:', err);
   } else {
