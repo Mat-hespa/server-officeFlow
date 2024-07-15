@@ -39,8 +39,7 @@ router.route('/student/:user/').get(studentController.getStudentByEmailControlle
 router.route('/student/change-password').post(studentController.changePasswordControllerFn);
 
 // PARTE DOS DOCUMENTOS
-router.post('/api/documentos', upload.single('documentFile'), (req, res, next) => {
-    res.send('File uploaded successfully.');
-});
+router.route('/api/documentos').post(upload.single('documentFile'), documentController.createDocumentoControllerFn);
+
 
 module.exports = router;
