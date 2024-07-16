@@ -27,4 +27,21 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
   });
 }
 
-module.exports = { createDocumentoDBService };
+const getDocumentosByRecipientService = (recipientEmail) => {
+  return new Promise((resolve, reject) => {
+    Documento.find({ recipient: recipientEmail })
+      .then(documentos => {
+        if (documentos.length === 0) {
+          reject(new Error('Nenhum documento encontrado para o recipient fornecido.'));
+        } else {
+          resolve(documentos);
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao buscar documentos:', error);
+        reject(error);
+      });
+  });
+};
+
+module.exports = { createDocumentoDBService, getDocumentosByRecipientService };

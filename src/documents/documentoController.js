@@ -56,7 +56,20 @@ async function createDocumentoControllerFn(req, res) {
   }
 }
 
+async function getDocumentosByRecipientControllerFn(req, res) {
+  try {
+    const { recipient } = req.params;
+    const documentos = await getDocumentosByRecipientService(recipient);
+    res.status(200).json({ documentos });
+  } catch (error) {
+    console.error('Erro ao buscar documentos:', error);
+    res.status(500).json({ message: error.message || 'Erro ao buscar documentos.' });
+  }
+}
+
+
 module.exports = {
   upload,
-  createDocumentoControllerFn
+  createDocumentoControllerFn,
+  getDocumentosByRecipientControllerFn
 };
