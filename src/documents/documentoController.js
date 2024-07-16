@@ -4,6 +4,7 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const { v4: uuidv4 } = require('uuid');
 const Documento = require('./documentoModel'); // Modelo do documento
+const documentoService = require('./documentoService');
 
 // Configuração do AWS S3
 const s3Client = new S3Client({
@@ -59,7 +60,7 @@ async function createDocumentoControllerFn(req, res) {
 async function getDocumentosByRecipientControllerFn(req, res) {
   try {
     const { recipient } = req.params;
-    const documentos = await getDocumentosByRecipientService(recipient);
+    const documentos = await documentoService.getDocumentosByRecipientService(recipient);
     res.status(200).json({ documentos });
   } catch (error) {
     console.error('Erro ao buscar documentos:', error);
