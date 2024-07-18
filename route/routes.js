@@ -43,7 +43,7 @@ router.route('/student/change-password').post(studentController.changePasswordCo
 router.route('/api/documentos').post(documentController.upload.single('documentFile'), documentController.createDocumentoControllerFn);
 router.route('/documentos/:recipient').get(documentController.getDocumentosByRecipientControllerFn);
 router.patch('/documentos/:id/read', documentController.markAsRead);
-router.get('/documentos/:recipient/unread', documentController.countUnreadDocumentos);
+router.get('/documentos/:recipient/unread', documentController.countUnreadDocumentos); // Rota para contar documentos não lidos
 
 
 

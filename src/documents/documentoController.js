@@ -76,8 +76,13 @@ async function markAsRead(req, res) {
 
 async function countUnreadDocumentos(req, res) {
   try {
-    const recipientEmail = req.params.recipient;
-    const unreadCount = await documentoService.countUnreadDocumentos(recipientEmail);
+    const { recipient } = req.params;
+    if (!recipient) {
+      res.status(400).json({ message: 'Recipient email is required.' });
+      return;
+    }
+
+    const unreadCount = await documentoService.countUnreadDocumentos(recipient);
     res.status(200).json({ unreadCount });
   } catch (error) {
     console.error('Erro ao contar documentos não lidos:', error);
