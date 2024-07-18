@@ -45,6 +45,6 @@ router.route('/documentos/:recipient').get(documentController.getDocumentosByRec
 
 
 // PARTE DOS RECADOS
-router.route('/recados').post(recadosController.createRecadoControllerFn);
+router.post('/recados', (req, res) => recadosController.createRecado(req, res));
 
 module.exports = router;
