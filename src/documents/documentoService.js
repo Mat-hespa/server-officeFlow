@@ -13,7 +13,8 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
       registrant,
       recipient,
       description,
-      documentFile: documentoFile.location // Caminho do arquivo no S3
+      fileUrl: documentoFile.location, // Caminho do arquivo no S3
+      read: false
     });
 
     novoDocumento.save()
@@ -25,7 +26,7 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
         reject(error);
       });
   });
-}
+};
 
 const getDocumentosByRecipientService = (recipientEmail) => {
   return new Promise((resolve, reject) => {
@@ -44,4 +45,21 @@ const getDocumentosByRecipientService = (recipientEmail) => {
   });
 };
 
-module.exports = { createDocumentoDBService, getDocumentosByRecipientService };
+const markAsRead = (documentoId) => {
+  return new Promise((resolve, reject) => {
+    Documento.findByIdAndUpdate(documentoId, { read: true }, { new: true })
+      .then(documento => {
+        if (!documento) {
+          reject(new Error('Documento não encontrado.'));
+        } else {
+          resolve(documento);
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao marcar documento como lido:', error);
+        reject(error);
+      });
+  });
+};
+
+module.exports = { createDocumentoDBService, getDocumentosByRecipientService, markAsRead };

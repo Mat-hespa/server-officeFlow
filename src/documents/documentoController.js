@@ -68,9 +68,20 @@ async function getDocumentosByRecipientControllerFn(req, res) {
   }
 }
 
+async function markAsRead(req, res) {
+  try {
+    const documentoId = req.params.id;
+    const documento = await documentoService.markAsRead(documentoId);
+    res.status(200).send(documento);
+  } catch (error) {
+    console.error('Erro ao marcar documento como lido:', error);
+    res.status(500).json({ message: error.message || 'Erro ao marcar documento como lido.' });
+  }
+}
 
 module.exports = {
   upload,
   createDocumentoControllerFn,
-  getDocumentosByRecipientControllerFn
+  getDocumentosByRecipientControllerFn,
+  markAsRead
 };

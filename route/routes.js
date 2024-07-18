@@ -42,6 +42,8 @@ router.route('/student/change-password').post(studentController.changePasswordCo
 // PARTE DOS DOCUMENTOS
 router.route('/api/documentos').post(documentController.upload.single('documentFile'), documentController.createDocumentoControllerFn);
 router.route('/documentos/:recipient').get(documentController.getDocumentosByRecipientControllerFn);
+router.patch('/documentos/:id/read', documentController.markAsRead);
+
 
 
 // PARTE DOS RECADOS
