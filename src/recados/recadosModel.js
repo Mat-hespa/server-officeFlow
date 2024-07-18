@@ -17,6 +17,10 @@ const recadoSchema = new mongoose.Schema({
      type: Boolean, 
      default: false 
     },
+    createdAt: { 
+        type: Date,
+        default: Date.now 
+    }  // Adiciona o campo createdAt
 });
 
 const Recado = mongoose.model("Recado", recadoSchema);

@@ -12,7 +12,7 @@ class RecadoService {
   }
 
   async getRecadosByDestinatario(emailDestinatario) {
-    return await Recado.find({ emailDestinatario });
+    return await Recado.find({ emailDestinatario }).sort({ createdAt: -1 });  // Ordena por createdAt em ordem decrescente
   }
 
   async countUnreadRecados(emailDestinatario) {
