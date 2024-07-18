@@ -79,9 +79,21 @@ async function markAsRead(req, res) {
   }
 }
 
+async function countUnreadDocumentos(req, res) {
+  try {
+    const recipientEmail = req.params.recipient;
+    const unreadCount = await documentoService.countUnreadDocumentos(recipientEmail);
+    res.status(200).json({ unreadCount });
+  } catch (error) {
+    console.error('Erro ao contar documentos não lidos:', error);
+    res.status(500).json({ message: error.message || 'Erro ao contar documentos não lidos.' });
+  }
+}
+
 module.exports = {
   upload,
   createDocumentoControllerFn,
   getDocumentosByRecipientControllerFn,
-  markAsRead
+  markAsRead,
+  countUnreadDocumentos
 };

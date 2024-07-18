@@ -62,4 +62,17 @@ const markAsRead = (documentoId) => {
   });
 };
 
-module.exports = { createDocumentoDBService, getDocumentosByRecipientService, markAsRead };
+const countUnreadDocumentos = (recipientEmail) => {
+  return new Promise((resolve, reject) => {
+    Documento.countDocuments({ recipient: recipientEmail, read: false })
+      .then(count => {
+        resolve(count);
+      })
+      .catch(error => {
+        console.error('Erro ao contar documentos não lidos:', error);
+        reject(error);
+      });
+  });
+};
+
+module.exports = { createDocumentoDBService, getDocumentosByRecipientService, markAsRead, countUnreadDocumentos };
