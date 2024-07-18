@@ -62,17 +62,15 @@ const markAsRead = (documentoId) => {
   });
 };
 
-const countUnreadDocumentos = (recipientEmail) => {
-  return new Promise((resolve, reject) => {
-    Documento.countDocuments({ recipient: recipientEmail, read: false })
-      .then(count => {
-        resolve(count);
-      })
-      .catch(error => {
-        console.error('Erro ao contar documentos não lidos:', error);
-        reject(error);
-      });
-  });
-};
+async function countUnreadDocumentos(req, res) {
+  try {
+    const recipientEmail = req.params.recipient;
+    const unreadCount = await documentoService.countUnreadDocumentos(recipientEmail);
+    res.status(200).json({ unreadCount });
+  } catch (error) {
+    console.error('Erro ao contar documentos não lidos:', error);
+    res.status(500).json({ message: error.message || 'Erro ao contar documentos não lidos.' });
+  }
+}
 
 module.exports = { createDocumentoDBService, getDocumentosByRecipientService, markAsRead, countUnreadDocumentos };
