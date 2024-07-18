@@ -4,6 +4,7 @@ var companyController = require('../src/company/companyController');
 var setorController = require('../src/setor/setorController')
 var pessoaController = require('../src/pessoaFisica/pessoaController')
 var documentController = require('../src/documents/documentoController')
+var recadosController = require('../src/recados/recadosController')
 const { upload } = require('../src/documents/documentoController');
 
 const router = express.Router();
@@ -42,5 +43,8 @@ router.route('/student/change-password').post(studentController.changePasswordCo
 router.route('/api/documentos').post(documentController.upload.single('documentFile'), documentController.createDocumentoControllerFn);
 router.route('/documentos/:recipient').get(documentController.getDocumentosByRecipientControllerFn);
 
+
+// PARTE DOS RECADOS
+router.route('/recados').post(recadosController.createRecadoControllerFn);
 
 module.exports = router;
