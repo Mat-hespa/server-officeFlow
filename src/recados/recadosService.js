@@ -10,6 +10,10 @@ class RecadoService {
     return await novoRecado.save();
   }
 
+  async getRecadosByDestinatario(emailDestinatario) {
+    return await Recado.find({ emailDestinatario });
+  }
+
   // Outros métodos de serviço, se necessário
 }
 

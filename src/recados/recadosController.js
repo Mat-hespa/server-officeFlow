@@ -10,6 +10,16 @@ class RecadoController {
     }
   }
 
+  async getRecadosByDestinatario(req, res) {
+    try {
+      const emailDestinatario = req.params.email;
+      const recados = await recadoService.getRecadosByDestinatario(emailDestinatario);
+      res.status(200).send({ recados });
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
+
   // Outros métodos de controlador, se necessáriox
 }
 
