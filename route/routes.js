@@ -47,5 +47,7 @@ router.route('/documentos/:recipient').get(documentController.getDocumentosByRec
 // PARTE DOS RECADOS
 router.post('/recados', (req, res) => recadosController.createRecado(req, res));
 router.get('/recados/:email', (req, res) => recadosController.getRecadosByDestinatario(req, res));
+router.get('/recados/:email/unread-count', (req, res) => recadosController.countUnreadRecados(req, res));
+router.patch('/recados/:id/read', (req, res) => recadosController.markAsRead(req, res));  // Nova rota
 
 module.exports = router;

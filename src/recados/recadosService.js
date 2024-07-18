@@ -1,3 +1,4 @@
+// services/recadoService.js
 const Recado = require('./recadosModel');
 
 class RecadoService {
@@ -14,7 +15,13 @@ class RecadoService {
     return await Recado.find({ emailDestinatario });
   }
 
-  // Outros métodos de serviço, se necessário
+  async countUnreadRecados(emailDestinatario) {
+    return await Recado.countDocuments({ emailDestinatario, read: false });
+  }
+
+  async markAsRead(recadoId) {
+    return await Recado.findByIdAndUpdate(recadoId, { read: true }, { new: true });
+  }
 }
 
 module.exports = new RecadoService();

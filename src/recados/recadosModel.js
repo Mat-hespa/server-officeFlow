@@ -10,9 +10,13 @@ const recadoSchema = new mongoose.Schema({
      required: true 
     },
   mensagem: { 
-    type: String, 
-    required: true 
-},
+     type: String, 
+     required: true 
+    },
+  read: { 
+     type: Boolean, 
+     default: false 
+    },
 });
 
 const Recado = mongoose.model("Recado", recadoSchema);

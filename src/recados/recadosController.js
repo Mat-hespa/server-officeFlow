@@ -1,3 +1,4 @@
+// controllers/recadoController.js
 const recadoService = require('./recadosService');
 
 class RecadoController {
@@ -20,7 +21,25 @@ class RecadoController {
     }
   }
 
-  // Outros métodos de controlador, se necessáriox
+  async countUnreadRecados(req, res) {
+    try {
+      const emailDestinatario = req.params.email;
+      const unreadCount = await recadoService.countUnreadRecados(emailDestinatario);
+      res.status(200).send({ unreadCount });
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
+
+  async markAsRead(req, res) {
+    try {
+      const recadoId = req.params.id;
+      const recado = await recadoService.markAsRead(recadoId);
+      res.status(200).send(recado);
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
 }
 
 module.exports = new RecadoController();
