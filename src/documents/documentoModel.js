@@ -1,34 +1,20 @@
 const mongoose = require('mongoose');
 
-const documentoSchema = new mongoose.Schema(
-  {
-    registrant: { 
-        type: String, 
-        required: true 
-    },
-    recipient: { 
-        type: String, 
-        required: true 
-    },
-    description: { 
-        type: String 
-    },
-    fileUrl: { 
-        type: String, 
-        required: true 
-    },
-    read: { 
-        type: Boolean, 
-        default: false 
-    },
-    createdAt: { 
-        type: Date,
-        default: Date.now 
+const documentSchema = new mongoose.Schema({
+  registrant: String,
+  description: String,
+  fileUrl: String,
+  createdAt: { type: Date, default: Date.now },
+  read: { type: Boolean, default: false },
+  // Novo campo para controlar o fluxo
+  status: { type: String, default: 'inicial' },
+  history: [
+    {
+      status: String,
+      updatedAt: { type: Date, default: Date.now },
+      updatedBy: String // Email ou ID do usuário que fez a atualização
     }
-  },
-  { timestamps: true }
-);
+  ]
+});
 
-const Documento = mongoose.model('Documento', documentoSchema);
-
-module.exports = Documento;
+module.exports = mongoose.model('Document', documentSchema);

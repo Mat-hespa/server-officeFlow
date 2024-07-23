@@ -6,7 +6,9 @@ class RecadoService {
     const novoRecado = new Recado({
       emailRemetente: data.emailRemetente,
       emailDestinatario: data.emailDestinatario,
-      mensagem: data.mensagem
+      mensagem: data.mensagem,
+      status: 'inicial',
+      history: [{ status: 'inicial', updatedBy: data.emailRemetente }]
     });
     return await novoRecado.save();
   }
@@ -21,6 +23,17 @@ class RecadoService {
 
   async markAsRead(recadoId) {
     return await Recado.findByIdAndUpdate(recadoId, { read: true }, { new: true });
+  }
+
+  // Novo método para atualizar status
+  async updateRecadoStatus(recadoId, status, updatedBy) {
+    const recado = await Recado.findById(recadoId);
+    if (!recado) {
+      throw new Error('Recado não encontrado.');
+    }
+    recado.status = status;
+    recado.history.push({ status, updatedBy });
+    return await recado.save();
   }
 }
 

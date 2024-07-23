@@ -90,10 +90,24 @@ async function countUnreadDocumentos(req, res) {
   }
 }
 
+// Novo controlador para atualizar status
+async function updateDocumentStatusController(req, res) {
+  try {
+    const { status, updatedBy } = req.body;
+    const documento = await documentoService.updateDocumentStatus(req.params.id, status, updatedBy);
+    req.app.get('io').emit('documentUpdated', documento);
+    res.status(200).json(documento);
+  } catch (error) {
+    console.error('Erro ao atualizar status do documento:', error);
+    res.status(500).json({ message: error.message || 'Erro ao atualizar status do documento.' });
+  }
+}
+
 module.exports = {
   upload,
   createDocumentoControllerFn,
   getDocumentosByRecipientControllerFn,
   markAsRead,
-  countUnreadDocumentos
+  countUnreadDocumentos,
+  updateDocumentStatusController
 };

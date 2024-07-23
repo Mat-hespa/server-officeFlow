@@ -1,3 +1,4 @@
+// services/documentoService.js
 const Documento = require('./documentoModel');
 
 const createDocumentoDBService = (documentoDetails, documentoFile) => {
@@ -14,7 +15,9 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
       recipient,
       description,
       fileUrl: documentoFile.location, // Caminho do arquivo no S3
-      read: false
+      read: false,
+      status: 'inicial',
+      history: [{ status: 'inicial', updatedBy: registrant }]
     });
 
     novoDocumento.save()
@@ -23,6 +26,29 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
       })
       .catch(error => {
         console.error('Erro ao cadastrar documento:', error);
+        reject(error);
+      });
+  });
+};
+
+// Novo método para atualizar status
+const updateDocumentStatus = (documentoId, status, updatedBy) => {
+  return new Promise((resolve, reject) => {
+    Documento.findById(documentoId)
+      .then(documento => {
+        if (!documento) {
+          reject(new Error('Documento não encontrado.'));
+          return;
+        }
+        documento.status = status;
+        documento.history.push({ status, updatedBy });
+        return documento.save();
+      })
+      .then(updatedDocumento => {
+        resolve(updatedDocumento);
+      })
+      .catch(error => {
+        console.error('Erro ao atualizar status do documento:', error);
         reject(error);
       });
   });
@@ -80,4 +106,4 @@ const markAsRead = (documentoId) => {
   });
 };
 
-module.exports = { createDocumentoDBService, getDocumentosByRecipientService, countUnreadDocumentos, markAsRead };
+module.exports = { createDocumentoDBService, getDocumentosByRecipientService, countUnreadDocumentos, markAsRead, updateDocumentStatus };

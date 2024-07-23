@@ -39,11 +39,13 @@ router.route('/student/:user/cargo').get(studentController.getCargoControllerFn)
 router.route('/student/:user/').get(studentController.getStudentByEmailControllerFn)
 router.route('/student/change-password').post(studentController.changePasswordControllerFn);
 
+
 // PARTE DOS DOCUMENTOS
 router.route('/api/documentos').post(documentController.upload.single('documentFile'), documentController.createDocumentoControllerFn);
 router.route('/documentos/:recipient').get(documentController.getDocumentosByRecipientControllerFn);
 router.patch('/documentos/:id/read', documentController.markAsRead);
 router.get('/documentos/:recipient/unread', documentController.countUnreadDocumentos); // Rota para contar documentos não lidos
+router.patch('/documentos/:id/status', documentController.updateDocumentStatusController);
 
 
 
@@ -52,5 +54,6 @@ router.post('/recados', (req, res) => recadosController.createRecado(req, res));
 router.get('/recados/:email', (req, res) => recadosController.getRecadosByDestinatario(req, res));
 router.get('/recados/:email/unread-count', (req, res) => recadosController.countUnreadRecados(req, res));
 router.patch('/recados/:id/read', (req, res) => recadosController.markAsRead(req, res));  // Nova rota
+router.patch('/recados/:id/status', (req, res) => recadosController.updateRecadoStatus(req, res));  // Nova rota
 
 module.exports = router;

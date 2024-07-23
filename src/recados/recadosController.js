@@ -40,6 +40,18 @@ class RecadoController {
       res.status(400).send(error);
     }
   }
+
+  // Novo controlador para atualizar status
+  async updateRecadoStatus(req, res) {
+    try {
+      const { status, updatedBy } = req.body;
+      const recado = await recadoService.updateRecadoStatus(req.params.id, status, updatedBy);
+      req.app.get('io').emit('recadoUpdated', recado);
+      res.status(200).send(recado);
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
 }
 
 module.exports = new RecadoController();
