@@ -58,8 +58,9 @@ const getDocumentosByRecipientService = (recipientEmail) => {
   return new Promise((resolve, reject) => {
     Documento.find({ recipient: recipientEmail })
       .then(documentos => {
+        // Resolva com uma lista vazia se nenhum documento for encontrado
         if (documentos.length === 0) {
-          reject(new Error('Nenhum documento encontrado para o recipient fornecido.'));
+          resolve([]);
         } else {
           resolve(documentos);
         }
