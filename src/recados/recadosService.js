@@ -1,5 +1,4 @@
-// services/recadoService.js
-const Recado = require('./recadosModel');
+const Recado = require('./recadoModel');
 
 class RecadoService {
   async createRecado(data) {
@@ -34,6 +33,21 @@ class RecadoService {
     recado.status = status;
     recado.history.push({ status, updatedBy });
     return await recado.save();
+  }
+
+  // Novo método para encaminhar recado
+  async forwardRecado(recadoId, recipient) {
+    const recado = await Recado.findById(recadoId);
+    if (!recado) {
+      throw new Error('Recado não encontrado.');
+    }
+    const novoRecado = new Recado({
+      ...recado._doc,
+      emailDestinatario: recipient,
+      status: 'encaminhado',
+      history: [...recado.history, { status: 'encaminhado', updatedBy: recado.emailDestinatario }]
+    });
+    return await novoRecado.save();
   }
 }
 

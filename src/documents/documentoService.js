@@ -1,4 +1,3 @@
-// services/documentoService.js
 const Documento = require('./documentoModel');
 
 const createDocumentoDBService = (documentoDetails, documentoFile) => {
@@ -31,7 +30,6 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
   });
 };
 
-// Novo método para atualizar status
 const updateDocumentStatus = (documentoId, status, updatedBy) => {
   return new Promise((resolve, reject) => {
     Documento.findById(documentoId)
@@ -54,11 +52,36 @@ const updateDocumentStatus = (documentoId, status, updatedBy) => {
   });
 };
 
+const forwardDocument = (documentoId, recipient) => {
+  return new Promise((resolve, reject) => {
+    Documento.findById(documentoId)
+      .then(documento => {
+        if (!documento) {
+          reject(new Error('Documento não encontrado.'));
+          return;
+        }
+        const novoDocumento = new Documento({
+          ...documento._doc,
+          recipient,
+          status: 'encaminhado',
+          history: [...documento.history, { status: 'encaminhado', updatedBy: documento.recipient }]
+        });
+        return novoDocumento.save();
+      })
+      .then(novoDocumento => {
+        resolve(novoDocumento);
+      })
+      .catch(error => {
+        console.error('Erro ao encaminhar documento:', error);
+        reject(error);
+      });
+  });
+};
+
 const getDocumentosByRecipientService = (recipientEmail) => {
   return new Promise((resolve, reject) => {
     Documento.find({ recipient: recipientEmail })
       .then(documentos => {
-        // Resolva com uma lista vazia se nenhum documento for encontrado
         if (documentos.length === 0) {
           resolve([]);
         } else {
@@ -107,4 +130,11 @@ const markAsRead = (documentoId) => {
   });
 };
 
-module.exports = { createDocumentoDBService, getDocumentosByRecipientService, countUnreadDocumentos, markAsRead, updateDocumentStatus };
+module.exports = {
+  createDocumentoDBService,
+  getDocumentosByRecipientService,
+  countUnreadDocumentos,
+  markAsRead,
+  updateDocumentStatus,
+  forwardDocument
+};

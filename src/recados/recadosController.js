@@ -1,5 +1,4 @@
-// controllers/recadoController.js
-const recadoService = require('./recadosService');
+const recadoService = require('./recadoService');
 
 class RecadoController {
   async createRecado(req, res) {
@@ -47,6 +46,17 @@ class RecadoController {
       const { status, updatedBy } = req.body;
       const recado = await recadoService.updateRecadoStatus(req.params.id, status, updatedBy);
       req.app.get('io').emit('recadoUpdated', recado);
+      res.status(200).send(recado);
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  }
+
+  // Novo controlador para encaminhar recado
+  async forwardRecado(req, res) {
+    try {
+      const { recadoId, recipient } = req.body;
+      const recado = await recadoService.forwardRecado(recadoId, recipient);
       res.status(200).send(recado);
     } catch (error) {
       res.status(400).send(error);

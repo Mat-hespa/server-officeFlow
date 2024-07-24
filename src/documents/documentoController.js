@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require('uuid');
 const Documento = require('./documentoModel');
 const documentoService = require('./documentoService');
 
-// Configuração do AWS S3
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
   credentials: {
@@ -14,7 +13,6 @@ const s3Client = new S3Client({
   }
 });
 
-// Configuração do multer para upload para S3
 const upload = multer({
   storage: multerS3({
     s3: s3Client,
@@ -31,7 +29,6 @@ const upload = multer({
   })
 });
 
-// Controlador para criar um documento
 async function createDocumentoControllerFn(req, res) {
   try {
     const { registrant, recipient, description } = req.body;
@@ -90,7 +87,6 @@ async function countUnreadDocumentos(req, res) {
   }
 }
 
-// Novo controlador para atualizar status
 async function updateDocumentStatusController(req, res) {
   try {
     const { status, updatedBy } = req.body;
@@ -103,11 +99,23 @@ async function updateDocumentStatusController(req, res) {
   }
 }
 
+async function forwardDocumentController(req, res) {
+  try {
+    const { documentId, recipient } = req.body;
+    const document = await documentoService.forwardDocument(documentId, recipient);
+    res.status(200).json(document);
+  } catch (error) {
+    console.error('Erro ao encaminhar documento:', error);
+    res.status(500).json({ message: error.message || 'Erro ao encaminhar documento.' });
+  }
+}
+
 module.exports = {
   upload,
   createDocumentoControllerFn,
   getDocumentosByRecipientControllerFn,
   markAsRead,
   countUnreadDocumentos,
-  updateDocumentStatusController
+  updateDocumentStatusController,
+  forwardDocumentController
 };
