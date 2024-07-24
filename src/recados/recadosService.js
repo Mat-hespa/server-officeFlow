@@ -32,6 +32,9 @@ class RecadoService {
     }
 
     // Adicionar novos registrant e recipient ao array existente
+    console.log('recipients copilot:', recado.emailDestinatario);
+    console.log('recipient:', recipient);
+
     recado.emailRemetente.push(newRegistrant);
     recado.emailDestinatario.push(recipient);
     recado.status = 'encaminhado';
