@@ -52,7 +52,7 @@ const updateDocumentStatus = (documentoId, status, updatedBy) => {
   });
 };
 
-const forwardDocument = (documentoId, recipient) => {
+const forwardDocument = (documentoId, newRegistrant, newRecipient) => {
   return new Promise((resolve, reject) => {
     Documento.findById(documentoId)
       .then(documento => {
@@ -60,16 +60,17 @@ const forwardDocument = (documentoId, recipient) => {
           reject(new Error('Documento não encontrado.'));
           return;
         }
-        const novoDocumento = new Documento({
-          ...documento._doc,
-          recipient,
-          status: 'encaminhado',
-          history: [...documento.history, { status: 'encaminhado', updatedBy: documento.recipient }]
-        });
-        return novoDocumento.save();
+
+        // Adicionar novos registrant e recipient ao array existente
+        documento.registrant.push(newRegistrant);
+        documento.recipient.push(newRecipient);
+        documento.status = 'encaminhado';
+        documento.history.push({ status: 'encaminhado', updatedBy: newRegistrant });
+
+        return documento.save();
       })
-      .then(novoDocumento => {
-        resolve(novoDocumento);
+      .then(updatedDocumento => {
+        resolve(updatedDocumento);
       })
       .catch(error => {
         console.error('Erro ao encaminhar documento:', error);

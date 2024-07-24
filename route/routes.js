@@ -46,6 +46,7 @@ router.route('/documentos/:recipient').get(documentController.getDocumentosByRec
 router.patch('/documentos/:id/read', documentController.markAsRead);
 router.get('/documentos/:recipient/unread', documentController.countUnreadDocumentos); // Rota para contar documentos não lidos
 router.patch('/documentos/:id/status', documentController.updateDocumentStatusController);
+router.post('/documentos/forward', documentController.forwardDocumentController);
 
 
 
@@ -55,5 +56,6 @@ router.get('/recados/:email', (req, res) => recadosController.getRecadosByDestin
 router.get('/recados/:email/unread-count', (req, res) => recadosController.countUnreadRecados(req, res));
 router.patch('/recados/:id/read', (req, res) => recadosController.markAsRead(req, res));  // Nova rota
 router.patch('/recados/:id/status', (req, res) => recadosController.updateRecadoStatus(req, res));  // Nova rota
+router.post('/recados/forward', (req, res) => recadosController.forwardRecado(req, res));  // Nova rota
 
 module.exports = router;

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const documentSchema = new mongoose.Schema({
-  registrant: String,
-  recipient: String,
+  registrant: [String], // Array de registrantes
+  recipient: [String], // Array de destinatários
   description: String,
   fileUrl: String,
   createdAt: { type: Date, default: Date.now },

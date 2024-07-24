@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
 
 const recadoSchema = new mongoose.Schema({
-  emailRemetente: String,
+  emailRemetente: [String], // Array de remetentes
+  emailDestinatario: [String], // Array de destinatários
   mensagem: String,
-  emailDestinatario: String,
   createdAt: { type: Date, default: Date.now },
   read: { type: Boolean, default: false },
-  // Novo campo para controlar o fluxo
   status: { type: String, default: 'inicial' },
   history: [
     {

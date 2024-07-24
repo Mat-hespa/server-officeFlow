@@ -101,9 +101,9 @@ async function updateDocumentStatusController(req, res) {
 
 async function forwardDocumentController(req, res) {
   try {
-    const { documentId, recipient } = req.body;
-    const document = await documentoService.forwardDocument(documentId, recipient);
-    res.status(200).json(document);
+    const { documentId, newRegistrant, newRecipient } = req.body;
+    const documento = await documentoService.forwardDocument(documentId, newRegistrant, newRecipient);
+    res.status(200).json(documento);
   } catch (error) {
     console.error('Erro ao encaminhar documento:', error);
     res.status(500).json({ message: error.message || 'Erro ao encaminhar documento.' });
