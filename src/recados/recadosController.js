@@ -55,9 +55,8 @@ class RecadoController {
   // Novo controlador para encaminhar recado
   async forwardRecado(req, res) {
     try {
-      const { recadoId, newRegistrant, recipient } = req.body;
-      console.log(recadoId, newRegistrant, recipient);
-      const recado = await recadoService.forwardRecado(recadoId, newRegistrant, recipient);
+      const { recadoId, newRegistrant, newRecipient } = req.body;
+      const recado = await recadoService.forwardRecado(recadoId, newRegistrant, newRecipient);
       res.status(200).send(recado);
     } catch (error) {
       res.status(400).send(error);

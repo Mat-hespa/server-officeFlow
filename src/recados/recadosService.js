@@ -25,7 +25,7 @@ class RecadoService {
   }
 
   // Novo método para encaminhar recado
-  async forwardRecado(recadoId, newRegistrant, recipient) {
+  async forwardRecado(recadoId, newRegistrant, newRecipient) {
     const recado = await Recado.findById(recadoId);
     if (!recado) {
       throw new Error('Recado não encontrado.');
@@ -33,10 +33,10 @@ class RecadoService {
 
     // Adicionar novos registrant e recipient ao array existente
     console.log('recipients copilot:', recado.emailDestinatario);
-    console.log('recipient:', recipient);
+    console.log('recipient:', newRecipient);
 
     recado.emailRemetente.push(newRegistrant);
-    recado.emailDestinatario.push(recipient);
+    recado.emailDestinatario.push(newRecipient);
     recado.status = 'encaminhado';
     recado.history.push({ status: 'encaminhado', updatedBy: newRegistrant });
 
