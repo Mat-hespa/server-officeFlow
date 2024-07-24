@@ -1,4 +1,4 @@
-const recadoService = require('./recadoService');
+const recadoService = require('./recadosService');
 
 class RecadoController {
   async createRecado(req, res) {

@@ -1,4 +1,4 @@
-const Recado = require('./recadoModel');
+const Recado = require('./recadosModel');
 
 class RecadoService {
   async createRecado(data) {
