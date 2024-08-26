@@ -14,9 +14,9 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
       recipient,
       description,
       fileUrl: documentoFile.location, // Caminho do arquivo no S3
-      read: false,
       status: 'inicial',
-      history: [{ status: 'inicial', updatedBy: registrant }]
+      history: [{ status: 'inicial', updatedBy: registrant }],
+      readBy: recipient.map(email => ({ recipient: email, read: false })) // Inicializa o estado de leitura
     });
 
     novoDocumento.save()
@@ -52,7 +52,7 @@ const updateDocumentStatus = (documentoId, status, updatedBy) => {
   });
 };
 
-const forwardDocument = (documentoId, newRegistrant, newRecipient) => {
+const forwardDocument = (documentoId, newRegistrant, newRecipient, comment) => {
   return new Promise((resolve, reject) => {
     Documento.findById(documentoId)
       .then(documento => {
@@ -61,11 +61,20 @@ const forwardDocument = (documentoId, newRegistrant, newRecipient) => {
           return;
         }
 
-        // Adicionar novos registrant e recipient ao array existente
+        // Adiciona novos registrantes e destinatários
         documento.registrant.push(newRegistrant);
         documento.recipient.push(newRecipient);
         documento.status = 'encaminhado';
-        documento.history.push({ status: 'encaminhado', updatedBy: newRegistrant });
+
+        // Adiciona uma nova entrada no histórico com o comentário
+        documento.history.push({ 
+          status: 'encaminhado', 
+          updatedBy: newRegistrant,
+          comment: comment // Inclui o novo comentário
+        });
+
+        // Adiciona o novo destinatário na lista de leitura
+        documento.readBy.push({ recipient: newRecipient, read: false });
 
         return documento.save();
       })
@@ -96,27 +105,26 @@ const getDocumentosByRecipientService = (recipientEmail) => {
   });
 };
 
-const countUnreadDocumentos = (recipientEmail) => {
-  return new Promise((resolve, reject) => {
-    if (!recipientEmail) {
-      reject(new Error('Recipient email is required.'));
-      return;
-    }
+const countUnreadDocumentos = (req, res) => {
+  const { recipient } = req.params;
 
-    Documento.countDocuments({ recipient: recipientEmail, read: false })
-      .then(count => {
-        resolve(count);
-      })
-      .catch(error => {
-        console.error('Erro ao contar documentos não lidos:', error);
-        reject(error);
-      });
-  });
+  Documento.countDocuments({ 'readBy.recipient': recipient, 'readBy.read': false })
+    .then(count => {
+      res.json({ unreadCount: count });
+    })
+    .catch(error => {
+      console.error('Erro ao contar documentos não lidos:', error);
+      res.status(500).json({ error: error.message });
+    });
 };
 
-const markAsRead = (documentoId) => {
+const markAsRead = (documentoId, recipientEmail) => {
   return new Promise((resolve, reject) => {
-    Documento.findByIdAndUpdate(documentoId, { read: true }, { new: true })
+    Documento.findOneAndUpdate(
+      { _id: documentoId, 'readBy.recipient': recipientEmail },
+      { $set: { 'readBy.$.read': true } },
+      { new: true }
+    )
       .then(documento => {
         if (!documento) {
           reject(new Error('Documento não encontrado.'));
