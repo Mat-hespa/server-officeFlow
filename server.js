@@ -26,7 +26,8 @@ app.use(cors({
 app.use(express.json());
 app.use(routes);
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://matheus:matheus2@cluster0.z2onvhn.mongodb.net/', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 

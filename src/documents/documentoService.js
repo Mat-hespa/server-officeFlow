@@ -2,12 +2,15 @@ const Documento = require('./documentoModel');
 
 const createDocumentoDBService = (documentoDetails, documentoFile) => {
   return new Promise((resolve, reject) => {
-    const { registrant, recipient, description } = documentoDetails;
+    let { registrant, recipient, description } = documentoDetails;
 
     if (!documentoFile || !documentoFile.location) {
       reject(new Error('Arquivo inválido ou não enviado.'));
       return;
     }
+
+    // Garantir que recipient seja um array
+    recipient = typeof recipient === 'string' ? JSON.parse(recipient) : recipient;
 
     const novoDocumento = new Documento({
       registrant,
@@ -19,6 +22,16 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
       readBy: recipient.map(email => ({ recipient: email, read: false })) // Inicializa o estado de leitura
     });
 
+    console.log(!novoDocumento.recipient.includes(registrant))
+    console.log(!novoDocumento.recipient.includes(registrant[0]))
+
+    // Adicionar o registrant ao array de recipient, se ainda não estiver presente
+    if (!novoDocumento.recipient.includes(registrant[0])) {
+      novoDocumento.recipient.push(registrant);
+      // Também adiciona ao estado de leitura (readBy)
+      novoDocumento.readBy.push({ recipient: registrant, read: false });
+    }
+
     novoDocumento.save()
       .then(result => {
         resolve(true);
@@ -29,6 +42,8 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
       });
   });
 };
+
+
 
 const updateDocumentStatus = (documentoId, status, updatedBy) => {
   return new Promise((resolve, reject) => {

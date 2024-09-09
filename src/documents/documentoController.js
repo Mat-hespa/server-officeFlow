@@ -6,17 +6,21 @@ const Documento = require('./documentoModel');
 const documentoService = require('./documentoService');
 
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
+  // region: process.env.AWS_REGION,
+  region: 'us-east-2',
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    // accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    accessKeyId: 'AKIAU6GD2YTKYNGGHL3W',
+    // secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    secretAccessKey: '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'
   }
 });
 
 const upload = multer({
   storage: multerS3({
     s3: s3Client,
-    bucket: process.env.AWS_BUCKET_NAME,
+    // bucket: process.env.AWS_BUCKET_NAME,
+    bucket: 'officeflow',
     acl: 'public-read',
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
@@ -38,8 +42,28 @@ async function createDocumentoControllerFn(req, res) {
       registrant,
       recipient,
       description,
-      fileUrl
+      fileUrl, 
+      history: [
+        {
+          status: 'encaminhado',
+          updatedAt: Date.now(),
+          updatedBy: registrant,
+          comment: description
+        }
+      ],
+      readBy: [
+        {
+          recipient: recipient,
+          read: false
+        }
+      ]
     });
+
+    console.log(novoDocumento)
+
+    novoDocumento.recipient.push(registrant)
+
+    console.log(novoDocumento)
 
     const documentoSalvo = await novoDocumento.save();
     res.status(201).json({ message: 'Documento cadastrado com sucesso!', documento: documentoSalvo });
@@ -53,6 +77,7 @@ async function getDocumentosByRecipientControllerFn(req, res) {
   try {
     const { recipient } = req.params;
     const documentos = await documentoService.getDocumentosByRecipientService(recipient);
+    console.log(documentos)
     res.status(200).json({ documentos });
   } catch (error) {
     console.error('Erro ao buscar documentos:', error);
@@ -60,32 +85,55 @@ async function getDocumentosByRecipientControllerFn(req, res) {
   }
 }
 
-async function markAsRead(req, res) {
-  try {
-    const documentoId = req.params.id;
-    const documento = await documentoService.markAsRead(documentoId);
-    res.status(200).send(documento);
-  } catch (error) {
-    console.error('Erro ao marcar documento como lido:', error);
-    res.status(500).json({ message: error.message || 'Erro ao marcar documento como lido.' });
-  }
-}
+const markAsRead = (req, res) => {
+  const documentoId = req.params.id;
+  const recipientEmail = req.body.recipientEmail;
 
-async function countUnreadDocumentos(req, res) {
-  try {
-    const { recipient } = req.params;
-    if (!recipient) {
-      res.status(400).json({ message: 'Recipient email is required.' });
-      return;
+  if (!documentoId || !recipientEmail) {
+    return res.status(400).json({ error: 'Documento ID e email do destinatário são obrigatórios.' });
+  }
+
+  Documento.findOneAndUpdate(
+    { _id: documentoId, 'readBy.recipient': recipientEmail },
+    { $set: { 'readBy.$.read': true } },
+    { new: true }
+  )
+    .then(documento => {
+      if (!documento) {
+        return res.status(404).json({ error: 'Documento não encontrado.' });
+      } else {
+        return res.json(documento);
+      }
+    })
+    .catch(error => {
+      console.error('Erro ao marcar documento como lido:', error);
+      return res.status(500).json({ error: error.message });
+    });
+};
+
+const countUnreadDocumentos = (req, res) => {
+  const { recipient } = req.params;
+
+  if (!recipient) {
+    return res.status(400).json({ error: 'Recipient email is required.' });
+  }
+
+  console.log(`Contando documentos não lidos para o destinatário: ${recipient}`);
+
+  Documento.countDocuments({
+    readBy: {
+      $elemMatch: { recipient: recipient, read: false }
     }
-
-    const unreadCount = await documentoService.countUnreadDocumentos(recipient);
-    res.status(200).json({ unreadCount });
-  } catch (error) {
-    console.error('Erro ao contar documentos não lidos:', error);
-    res.status(500).json({ message: error.message || 'Erro ao contar documentos não lidos.' });
-  }
-}
+  })
+    .then(count => {
+      console.log(`Documentos não lidos encontrados: ${count}`);
+      res.json({ unreadCount: count });
+    })
+    .catch(error => {
+      console.error('Erro ao contar documentos não lidos:', error);
+      res.status(500).json({ error: error.message });
+    });
+};
 
 async function updateDocumentStatusController(req, res) {
   try {
@@ -101,8 +149,8 @@ async function updateDocumentStatusController(req, res) {
 
 async function forwardDocumentController(req, res) {
   try {
-    const { documentId, newRegistrant, newRecipient } = req.body;
-    const documento = await documentoService.forwardDocument(documentId, newRegistrant, newRecipient);
+    const { documentId, newRegistrant, newRecipient, comment} = req.body;
+    const documento = await documentoService.forwardDocument(documentId, newRegistrant, newRecipient, comment);
     res.status(200).json(documento);
   } catch (error) {
     console.error('Erro ao encaminhar documento:', error);
