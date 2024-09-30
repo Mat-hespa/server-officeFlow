@@ -1,4 +1,5 @@
 const pessoaService = require('./pessoaService');
+const Pessoa = require('./pessoaModel');
 
 // Função para criar uma nova pessoa
 const createPessoaControllerFn = async (req, res) => {
@@ -70,5 +71,22 @@ const updatePessoaByEmailControllerFn = async (req, res) => {
       res.status(500).send({ "status": false, "message": err.message });
     }
   }
+
+const getPessoasPorSetor = async (req, res) => {
+    try {
+      const { setorNome } = req.params;
+      const pessoas = await Pessoa.find({ setorEmprego: setorNome });
+      console.log(setorNome)
+      console.log(pessoas)
   
-module.exports = { createPessoaControllerFn, getAllPessoasObjectControllerFn, getAllPessoasNameObjectControllerFn, getPessoaByEmailControllerFn, updatePessoaByEmailControllerFn};
+      if (!pessoas) {
+        return res.status(404).json({ message: 'Nenhuma pessoa encontrada para este setor' });
+      }
+  
+      res.status(200).json({ status: true, pessoas });
+    } catch (error) {
+      res.status(500).json({ status: false, message: 'Erro ao buscar pessoas', error });
+    }
+  };
+  
+module.exports = { createPessoaControllerFn, getAllPessoasObjectControllerFn, getAllPessoasNameObjectControllerFn, getPessoaByEmailControllerFn, updatePessoaByEmailControllerFn, getPessoasPorSetor };

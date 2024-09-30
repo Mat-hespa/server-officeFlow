@@ -5,6 +5,7 @@ var setorController = require('../src/setor/setorController')
 var pessoaController = require('../src/pessoaFisica/pessoaController')
 var documentController = require('../src/documents/documentoController')
 var recadosController = require('../src/recados/recadosController')
+var chamadoController = require('../src/chamadoTI/chamadoController')
 const { upload } = require('../src/documents/documentoController');
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.route('/pessoas').get(pessoaController.getAllPessoasObjectControllerFn);
 router.route('/namePessoas').get(pessoaController.getAllPessoasNameObjectControllerFn);
 router.route('/pessoa/:email').get(pessoaController.getPessoaByEmailControllerFn);
 router.route('/pessoa/:email/update').put(pessoaController.updatePessoaByEmailControllerFn);
+router.route('/pessoa/api/:setorNome').get(pessoaController.getPessoasPorSetor);
 
 
 // PARTE DAS EMPRESAS
@@ -57,5 +59,14 @@ router.get('/recados/:email/unread-count', (req, res) => recadosController.count
 router.patch('/recados/:id/read', (req, res) => recadosController.markAsRead(req, res));  // Nova rota
 router.patch('/recados/:id/status', (req, res) => recadosController.updateRecadoStatus(req, res));  // Nova rota
 router.post('/recados/forward', (req, res) => recadosController.forwardRecado(req, res));  // Nova rota
+
+
+
+// PARTE DOS RECADOS
+router.post('/api/chamados',chamadoController.upload.array('anexos', 10), chamadoController.createChamadoControllerFn);
+router.get('/api/chamados', chamadoController.getAllChamadosControllerFn);
+router.put('/api/chamados/:id', chamadoController.updateChamadoControllerFn);
+
+
 
 module.exports = router;

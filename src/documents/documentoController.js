@@ -5,22 +5,20 @@ const { v4: uuidv4 } = require('uuid');
 const Documento = require('./documentoModel');
 const documentoService = require('./documentoService');
 
+// Configurando o cliente S3
 const s3Client = new S3Client({
-  // region: process.env.AWS_REGION,
-  region: 'us-east-2',
+  region: process.env.AWS_REGION,
   credentials: {
-    // accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    accessKeyId: 'AKIAU6GD2YTKYNGGHL3W',
-    // secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-    secretAccessKey: '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'
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
   }
 });
 
+// Configurando o multer com multer-s3
 const upload = multer({
   storage: multerS3({
     s3: s3Client,
-    // bucket: process.env.AWS_BUCKET_NAME,
-    bucket: 'officeflow',
+    bucket: process.env.AWS_BUCKET_NAME,
     acl: 'public-read',
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
@@ -32,6 +30,7 @@ const upload = multer({
     }
   })
 });
+
 
 async function createDocumentoControllerFn(req, res) {
   try {
