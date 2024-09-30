@@ -6,30 +6,29 @@ const Chamado = require('./chamadoModel');
 
 // Configurando o cliente S3
 const s3Client = new S3Client({
-    region: process.env.AWS_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-    }
-  });
+  region: `us-east-2`,
+  credentials: {
+    accessKeyId: 'AKIAU6GD2YTKYNGGHL3W',
+    secretAccessKey: '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'
+  }
+});
 
 // Configurando o multer com multer-s3
 const upload = multer({
-    storage: multerS3({
-      s3: s3Client,
-      bucket: process.env.AWS_BUCKET_NAME,
-      acl: 'public-read',
-      metadata: function (req, file, cb) {
-        cb(null, { fieldName: file.fieldname });
-      },
-      key: function (req, file, cb) {
-        const ext = file.originalname.split('.').pop();
-        const filename = `${uuidv4()}.${ext}`;
-        cb(null, filename);
-      }
-    })
-  });
-  
+  storage: multerS3({
+    s3: s3Client,
+    bucket: 'officeflow',
+    acl: 'public-read',
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      const ext = file.originalname.split('.').pop();
+      const filename = `${uuidv4()}.${ext}`;
+      cb(null, filename);
+    }
+  })
+});
 
 // Função de criação de chamado
 async function createChamadoControllerFn(req, res) {
@@ -62,45 +61,60 @@ async function createChamadoControllerFn(req, res) {
   }
 }
 
-// Adicionar método para buscar chamados no controller
+// Função de busca de todos os chamados
 async function getAllChamadosControllerFn(req, res) {
-    try {
-      const chamados = await Chamado.find();
-      res.status(200).json(chamados);
-    } catch (error) {
-      console.error('Erro ao buscar chamados:', error);
-      res.status(500).json({ message: 'Erro ao buscar chamados.' });
+  try {
+    const { userRole, userEmail } = req.query;
+
+    let chamados;
+    if (userRole === 'tecnico') {
+      chamados = await Chamado.find(); // Técnicos veem todos os chamados
+    } else {
+      chamados = await Chamado.find({ solicitante: userEmail }); // Outros usuários veem apenas seus chamados
     }
+
+    res.status(200).json(chamados);
+  } catch (error) {
+    console.error('Erro ao buscar chamados:', error);
+    res.status(500).json({ message: 'Erro ao buscar chamados.' });
   }
-  
-  async function updateChamadoControllerFn(req, res) {
-    try {
-      const { status, comment } = req.body;
-      const chamado = await Chamado.findById(req.params.id);
-  
-      if (!chamado) {
-        return res.status(404).json({ message: 'Chamado não encontrado.' });
-      }
-  
-      // Atualiza o status e adiciona um comentário no histórico
-      chamado.status = status;
-      chamado.history.push({
-        status,
-        updatedAt: Date.now(),
-        updatedBy: req.body.updatedBy,  // Captura o usuário do corpo da requisição
-        comment
-      });
-  
-      const chamadoAtualizado = await chamado.save();
-      res.status(200).json(chamadoAtualizado);
-    } catch (error) {
-      console.error('Erro ao atualizar o chamado:', error);
-      res.status(500).json({ message: 'Erro ao atualizar o chamado.' });
+}
+
+// Função de atualização de chamado
+async function updateChamadoControllerFn(req, res) {
+  try {
+    const { status, comment, updatedBy, userRole } = req.body;
+
+    // Verifique se o usuário é um técnico
+    if (userRole !== 'tecnico') {
+      return res.status(403).json({ message: 'Acesso negado. Somente técnicos podem atualizar o status dos chamados.' });
     }
+
+    const chamado = await Chamado.findById(req.params.id);
+
+    if (!chamado) {
+      return res.status(404).json({ message: 'Chamado não encontrado.' });
+    }
+
+    // Atualiza o status e adiciona um comentário no histórico
+    chamado.status = status;
+    chamado.history.push({
+      status,
+      updatedAt: Date.now(),
+      updatedBy,
+      comment,
+    });
+
+    const chamadoAtualizado = await chamado.save();
+    res.status(200).json(chamadoAtualizado);
+  } catch (error) {
+    console.error('Erro ao atualizar o chamado:', error);
+    res.status(500).json({ message: 'Erro ao atualizar o chamado.' });
   }
+}
 
 module.exports = {
-  upload,  // Certifique-se de que está exportando o 'upload' corretamente
+  upload, // Certifique-se de que está exportando o 'upload' corretamente
   createChamadoControllerFn,
   updateChamadoControllerFn,
   getAllChamadosControllerFn,

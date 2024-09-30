@@ -7,10 +7,10 @@ const documentoService = require('./documentoService');
 
 // Configurando o cliente S3
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
+  region: `us-east-2`,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    accessKeyId: 'AKIAU6GD2YTKYNGGHL3W',
+    secretAccessKey: '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'
   }
 });
 
@@ -18,7 +18,7 @@ const s3Client = new S3Client({
 const upload = multer({
   storage: multerS3({
     s3: s3Client,
-    bucket: process.env.AWS_BUCKET_NAME,
+    bucket: 'officeflow',
     acl: 'public-read',
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
