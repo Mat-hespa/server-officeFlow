@@ -113,9 +113,26 @@ async function updateChamadoControllerFn(req, res) {
   }
 }
 
+// Função de busca de um chamado por ID
+async function getChamadoByIdControllerFn(req, res) {
+  try {
+    const chamado = await Chamado.findById(req.params.id);
+
+    if (!chamado) {
+      return res.status(404).json({ message: 'Chamado não encontrado.' });
+    }
+
+    res.status(200).json(chamado);
+  } catch (error) {
+    console.error('Erro ao buscar chamado:', error);
+    res.status(500).json({ message: 'Erro ao buscar chamado.' });
+  }
+}
+
 module.exports = {
-  upload, // Certifique-se de que está exportando o 'upload' corretamente
+  upload,
   createChamadoControllerFn,
   updateChamadoControllerFn,
   getAllChamadosControllerFn,
+  getChamadoByIdControllerFn, // Exportar a nova função
 };

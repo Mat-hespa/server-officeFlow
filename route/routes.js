@@ -66,6 +66,8 @@ router.post('/recados/forward', (req, res) => recadosController.forwardRecado(re
 router.post('/api/chamados',chamadoController.upload.array('anexos', 10), chamadoController.createChamadoControllerFn);
 router.get('/api/chamados', chamadoController.getAllChamadosControllerFn);
 router.put('/api/chamados/:id', chamadoController.updateChamadoControllerFn);
+router.get('/api/chamados/unico/:id', chamadoController.getChamadoByIdControllerFn);
+
 
 
 
