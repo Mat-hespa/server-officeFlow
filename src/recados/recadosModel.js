@@ -5,13 +5,19 @@ const recadoSchema = new mongoose.Schema({
   emailDestinatario: [String], // Array de destinatários
   mensagem: String,
   createdAt: { type: Date, default: Date.now },
-  read: { type: Boolean, default: false },
   status: { type: String, default: 'inicial' },
   history: [
     {
       status: String,
       updatedAt: { type: Date, default: Date.now },
-      updatedBy: String // Email ou ID do usuário que fez a atualização
+      updatedBy: String, // Email ou ID do usuário que fez a atualização
+      comment: String // New field for comments or modified descriptions
+    }
+  ],
+  readBy: [
+    {
+      recipient: String,
+      read: { type: Boolean, default: false }
     }
   ]
 });

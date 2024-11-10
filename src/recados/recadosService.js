@@ -2,13 +2,22 @@ const Recado = require('./recadosModel');
 
 class RecadoService {
   async createRecado(data) {
+    // Ensure emailDestinatario is an array
+    const emailDestinatario = Array.isArray(data.emailDestinatario) ? data.emailDestinatario : [data.emailDestinatario];
+
     const novoRecado = new Recado({
       emailRemetente: [data.emailRemetente],
-      emailDestinatario: [data.emailDestinatario],
+      emailDestinatario: emailDestinatario,
       mensagem: data.mensagem,
       status: 'inicial',
-      history: [{ status: 'inicial', updatedBy: data.emailRemetente }]
+      history: [{ status: 'inicial', updatedBy: data.emailRemetente }],
+      readBy: emailDestinatario.map(email => ({ recipient: email, read: false })) // Inicializa o estado de leitura
     });
+
+    if (!novoRecado.emailDestinatario.includes(novoRecado.emailRemetente[0])) {
+      novoRecado.emailDestinatario.push(data.emailRemetente);
+    }
+
     return await novoRecado.save();
   }
 
@@ -17,28 +26,54 @@ class RecadoService {
   }
 
   async countUnreadRecados(emailDestinatario) {
-    return await Recado.countDocuments({ emailDestinatario: emailDestinatario, read: false });
+    try {
+      // Find documents matching the criteria
+      const matchingRecados = await Recado.find({
+        readBy: {
+          $elemMatch: { recipient: emailDestinatario, read: false }
+        }
+      });
+  
+      // Log each matching document
+      matchingRecados.forEach(recado => {
+        console.log('Matching Recado:', JSON.stringify(recado, null, 2));
+      });
+  
+      // Count the documents
+      const unreadCount = matchingRecados.length;
+  
+      console.log(`Unread count for ${emailDestinatario}: ${unreadCount}`);
+      return unreadCount;
+    } catch (error) {
+      console.error('Error counting unread recados:', error);
+      throw new Error('Erro ao contar recados não lidos.');
+    }
   }
 
-  async markAsRead(recadoId) {
-    return await Recado.findByIdAndUpdate(recadoId, { read: true }, { new: true });
+  async markAsRead(recadoId, recipientEmail) {
+    return await Recado.findOneAndUpdate(
+      { _id: recadoId, 'readBy.recipient': recipientEmail },
+      { $set: { 'readBy.$.read': true } },
+      { new: true }
+    );
   }
 
   // Novo método para encaminhar recado
-  async forwardRecado(recadoId, newRegistrant, newRecipient) {
+  async forwardRecado(recadoId, newRegistrant, newRecipient, comment) {
     const recado = await Recado.findById(recadoId);
     if (!recado) {
       throw new Error('Recado não encontrado.');
     }
 
     // Adicionar novos registrant e recipient ao array existente
-    console.log('recipients copilot:', recado.emailDestinatario);
-    console.log('recipient:', newRecipient);
-
     recado.emailRemetente.push(newRegistrant);
     recado.emailDestinatario.push(newRecipient);
     recado.status = 'encaminhado';
-    recado.history.push({ status: 'encaminhado', updatedBy: newRegistrant });
+    recado.history.push({ status: 'encaminhado', updatedBy: newRegistrant, comment: comment });
+    console.log(recado.history)
+
+    // Adiciona o novo destinatário na lista de leitura
+    recado.readBy.push({ recipient: newRecipient, read: false });
 
     return await recado.save();
   }

@@ -120,18 +120,30 @@ const getDocumentosByRecipientService = (recipientEmail) => {
   });
 };
 
-const countUnreadDocumentos = (req, res) => {
-  const { recipient } = req.params;
-
-  Documento.countDocuments({ 'readBy.recipient': recipient, 'readBy.read': false })
-    .then(count => {
-      res.json({ unreadCount: count });
-    })
-    .catch(error => {
-      console.error('Erro ao contar documentos não lidos:', error);
-      res.status(500).json({ error: error.message });
+async function countUnreadDocumentos(emailDestinatario) {
+  try {
+    // Find documents matching the criteria
+    const matchingDocumentos = await Documento.find({
+      readBy: {
+        $elemMatch: { recipient: emailDestinatario, read: false }
+      }
     });
-};
+
+    // Log each matching document
+    matchingDocumentos.forEach(documento => {
+      console.log('Matching documento:', JSON.stringify(documento, null, 2));
+    });
+
+    // Count the documents
+    const unreadCount = matchingDocumentos.length;
+
+    console.log(`Unread count for ${emailDestinatario}: ${unreadCount}`);
+    return unreadCount;
+  } catch (error) {
+    console.error('Error counting unread recados:', error);
+    throw new Error('Erro ao contar recados não lidos.');
+  }
+}
 
 const markAsRead = (documentoId, recipientEmail) => {
   return new Promise((resolve, reject) => {

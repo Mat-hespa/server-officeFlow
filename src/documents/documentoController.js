@@ -44,7 +44,7 @@ async function createDocumentoControllerFn(req, res) {
       fileUrl, 
       history: [
         {
-          status: 'encaminhado',
+          status: 'inicial',
           updatedAt: Date.now(),
           updatedBy: registrant,
           comment: description
@@ -110,29 +110,18 @@ const markAsRead = (req, res) => {
     });
 };
 
-const countUnreadDocumentos = (req, res) => {
-  const { recipient } = req.params;
-
-  if (!recipient) {
-    return res.status(400).json({ error: 'Recipient email is required.' });
+async function countUnreadDocumentos(req, res) {
+  try {
+    const recipient = req.params.recipient;
+    console.log('emailDestinatario::::::::::::::', recipient);
+    const unreadCount = await documentoService.countUnreadDocumentos(recipient);
+    console.log('unreadCount:::::::::::::::::', unreadCount);
+    res.status(200).json({ unreadCount });
+  } catch (error) {
+    console.error('Error counting unread recados:', error);
+    res.status(500).json({ message: 'Erro ao contar recados não lidos.' });
   }
-
-  console.log(`Contando documentos não lidos para o destinatário: ${recipient}`);
-
-  Documento.countDocuments({
-    readBy: {
-      $elemMatch: { recipient: recipient, read: false }
-    }
-  })
-    .then(count => {
-      console.log(`Documentos não lidos encontrados: ${count}`);
-      res.json({ unreadCount: count });
-    })
-    .catch(error => {
-      console.error('Erro ao contar documentos não lidos:', error);
-      res.status(500).json({ error: error.message });
-    });
-};
+}
 
 async function updateDocumentStatusController(req, res) {
   try {
