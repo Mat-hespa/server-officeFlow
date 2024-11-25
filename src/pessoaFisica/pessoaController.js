@@ -20,10 +20,10 @@ const createPessoaControllerFn = async (req, res) => {
 const getAllPessoasObjectControllerFn = async (req, res) => {
     try {
         const pessoas = await pessoaService.getAllPessoasDBService();
-        // console.log(pessoas);
+        // (pessoas);
         res.send({ "status": true, "pessoas": pessoas });
     } catch (err) {
-        // console.log(err);
+        // (err);
         res.status(500).send({ "status": false, "message": err.message });
     }
 }
@@ -31,10 +31,10 @@ const getAllPessoasObjectControllerFn = async (req, res) => {
 const getAllPessoasNameObjectControllerFn = async (req, res) => {
     try {
         const pessoasNames = await pessoaService.getAllPessoasNamesDBService();
-        // console.log(pessoasNames);
+        // (pessoasNames);
         res.send({ "status": true, "pessoasNames": pessoasNames });
     } catch (err) {
-        // console.log(err);
+        // (err);
         res.status(500).send({ "status": false, "message": err.message });
     }
 }
@@ -44,7 +44,7 @@ const getPessoaByEmailControllerFn = async (req, res) => {
     try {
         const email = req.params.email;
         const pessoa = await pessoaService.getPessoaByEmailDBService(email);
-        // console.log(pessoa);
+        // (pessoa);
         if (pessoa) {
             res.send({ "status": true, "pessoa": pessoa });
         } else {
@@ -76,8 +76,6 @@ const getPessoasPorSetor = async (req, res) => {
     try {
       const { setorNome } = req.params;
       const pessoas = await Pessoa.find({ setorEmprego: setorNome });
-      console.log(setorNome)
-      console.log(pessoas)
   
       if (!pessoas) {
         return res.status(404).json({ message: 'Nenhuma pessoa encontrada para este setor' });

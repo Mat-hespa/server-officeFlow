@@ -58,11 +58,7 @@ async function createDocumentoControllerFn(req, res) {
       ]
     });
 
-    console.log(novoDocumento)
-
     novoDocumento.recipient.push(registrant)
-
-    console.log(novoDocumento)
 
     const documentoSalvo = await novoDocumento.save();
     res.status(201).json({ message: 'Documento cadastrado com sucesso!', documento: documentoSalvo });
@@ -76,7 +72,7 @@ async function getDocumentosByRecipientControllerFn(req, res) {
   try {
     const { recipient } = req.params;
     const documentos = await documentoService.getDocumentosByRecipientService(recipient);
-    console.log(documentos)
+    (documentos)
     res.status(200).json({ documentos });
   } catch (error) {
     console.error('Erro ao buscar documentos:', error);
@@ -113,9 +109,9 @@ const markAsRead = (req, res) => {
 async function countUnreadDocumentos(req, res) {
   try {
     const recipient = req.params.recipient;
-    console.log('emailDestinatario::::::::::::::', recipient);
+    ('emailDestinatario::::::::::::::', recipient);
     const unreadCount = await documentoService.countUnreadDocumentos(recipient);
-    console.log('unreadCount:::::::::::::::::', unreadCount);
+    ('unreadCount:::::::::::::::::', unreadCount);
     res.status(200).json({ unreadCount });
   } catch (error) {
     console.error('Error counting unread recados:', error);

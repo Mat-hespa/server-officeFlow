@@ -22,8 +22,8 @@ const createDocumentoDBService = (documentoDetails, documentoFile) => {
       readBy: recipient.map(email => ({ recipient: email, read: false })) // Inicializa o estado de leitura
     });
 
-    console.log(!novoDocumento.recipient.includes(registrant))
-    console.log(!novoDocumento.recipient.includes(registrant[0]))
+    (!novoDocumento.recipient.includes(registrant))
+    (!novoDocumento.recipient.includes(registrant[0]))
 
     // Adicionar o registrant ao array de recipient, se ainda não estiver presente
     if (!novoDocumento.recipient.includes(registrant[0])) {
@@ -131,13 +131,13 @@ async function countUnreadDocumentos(emailDestinatario) {
 
     // Log each matching document
     matchingDocumentos.forEach(documento => {
-      console.log('Matching documento:', JSON.stringify(documento, null, 2));
+      ('Matching documento:', JSON.stringify(documento, null, 2));
     });
 
     // Count the documents
     const unreadCount = matchingDocumentos.length;
 
-    console.log(`Unread count for ${emailDestinatario}: ${unreadCount}`);
+    (`Unread count for ${emailDestinatario}: ${unreadCount}`);
     return unreadCount;
   } catch (error) {
     console.error('Error counting unread recados:', error);

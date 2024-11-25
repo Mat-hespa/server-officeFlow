@@ -6,9 +6,9 @@ var createStudentControllerFn = async (req, res) =>
 {
     try
     {
-    // console.log(req.body);
+    // (req.body);
     var status = await studentService.createStudentDBService(req.body);
-    // console.log(status);
+    // (status);
 
     if (status) {
         res.send({ "status": true, "message": "Student created successfully" });
@@ -18,7 +18,7 @@ var createStudentControllerFn = async (req, res) =>
 }
 catch(err)
 {
-    // console.log(err);
+    // (err);
 }
 }
 
@@ -33,7 +33,7 @@ var loginUserControllerFn = async (req, res) => {
         }
 
     } catch (error) {
-        // console.log(error);
+        // (error);
         res.send({ "status": false, "message": error.msg });
     }
 }
@@ -41,11 +41,11 @@ var loginUserControllerFn = async (req, res) => {
 const getCargoControllerFn = async (req, res) => {
     try {
         const email = req.params.user;
-        // console.log(email)
+        // (email)
         const cargo = await studentService.getCargoByEmail(email);
         res.send({ "status": true, "cargo": cargo });
     } catch (error) {
-        // console.log(error);
+        // (error);
         res.status(500).send({ "status": false, "message": "Internal server error" });
     }
 }
@@ -56,9 +56,9 @@ const getStudentByEmailControllerFn = async (req, res) => {
         const student = await studentService.getStudentByEmailDBService(email);
         
         const decryptedPassword = encryptor.decrypt(student.password);
-        console.log(decryptedPassword)
+        (decryptedPassword)
         const passwordLength = decryptedPassword.length;
-        console.log(passwordLength)
+        (passwordLength)
 
         student.password = passwordLength
 

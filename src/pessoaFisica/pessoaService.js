@@ -27,7 +27,7 @@ const createPessoaDBService = (pessoaDetails) => {
             cargoEmprego: pessoaDetails.cargoEmprego,
         });
 
-        // console.log(pessoaModelData)
+        // (pessoaModelData)
 
         pessoaModelData.save()
             .then(result => {
@@ -61,6 +61,9 @@ const getPessoaByEmailDBService = (email) => {
 }
 
 const updatePessoaByEmailDBService = (email, newData) => {
+    console.log('Cheguei aqui')
+    console.log(email)
+    console.log(newData)
     return pessoaModel.findOneAndUpdate({ email: email }, newData).exec();
   }
 

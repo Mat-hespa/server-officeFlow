@@ -36,13 +36,13 @@ class RecadoService {
   
       // Log each matching document
       matchingRecados.forEach(recado => {
-        console.log('Matching Recado:', JSON.stringify(recado, null, 2));
+        ('Matching Recado:', JSON.stringify(recado, null, 2));
       });
   
       // Count the documents
       const unreadCount = matchingRecados.length;
   
-      console.log(`Unread count for ${emailDestinatario}: ${unreadCount}`);
+      (`Unread count for ${emailDestinatario}: ${unreadCount}`);
       return unreadCount;
     } catch (error) {
       console.error('Error counting unread recados:', error);
@@ -70,7 +70,7 @@ class RecadoService {
     recado.emailDestinatario.push(newRecipient);
     recado.status = 'encaminhado';
     recado.history.push({ status: 'encaminhado', updatedBy: newRegistrant, comment: comment });
-    console.log(recado.history)
+    (recado.history)
 
     // Adiciona o novo destinatário na lista de leitura
     recado.readBy.push({ recipient: newRecipient, read: false });

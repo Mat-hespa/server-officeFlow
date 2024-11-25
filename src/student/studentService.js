@@ -52,7 +52,7 @@ const loginuserDBService = (studentDetails) => {
 //     return new Promise((resolve, reject) => {
 //         studentModel.findOne({ email: email })
 //             .then(result => {
-//                 console.log(result)
+//                 (result)
 //                 if (result) {
 //                     resolve(result.cargo);
 //                 } else {
@@ -68,7 +68,7 @@ const loginuserDBService = (studentDetails) => {
 const getCargoByEmail = (email) => {
     return studentModel.find({ email: email }).exec()
         .then(contas => {
-            // console.log('Contas encontradas:', contas);
+            // ('Contas encontradas:', contas);
             return contas[0].cargo;
         })
         .catch(error => {

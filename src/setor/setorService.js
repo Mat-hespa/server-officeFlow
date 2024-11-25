@@ -43,7 +43,7 @@ const getSetorByNameDBService = (name) => {
     return setorModel.findOne({ nomeSetor: name }).exec()
         .then(pessoa => {
             if (pessoa) {
-                console.log(pessoa)
+                (pessoa)
                 return pessoa.toObject();
             } else {
                 return null; // Retorna null se a pessoa não for encontrada
@@ -54,11 +54,11 @@ const getSetorByNameDBService = (name) => {
 const updateSetorByNameDBService = async (name, newData) => {
     // Verifica se o setor está sendo atualizado para não ser mais um subsetor
     const novoIsSubSetor = newData.isSubSetor;
-    console.log('novoÉsubsetor, ', novoIsSubSetor)
+    ('novoÉsubsetor, ', novoIsSubSetor)
     const wasSubsetor = await setorModel.findOne({ nomeSetor: name }).select('isSubSetor');
-    console.log('wasSubsetor, ', wasSubsetor)
+    ('wasSubsetor, ', wasSubsetor)
     const eraSubsetor = wasSubsetor.isSubSetor === 'sim';
-    console.log('eraSubSetor, ', eraSubsetor)
+    ('eraSubSetor, ', eraSubsetor)
 
     // Se o setor era um subsetor e agora não é mais, limpa o campo setorPai
     if (eraSubsetor && novoIsSubSetor === 'nao') {

@@ -31,9 +31,9 @@ class RecadoController {
   async countUnreadRecados(req, res) {
     try {
       const emailDestinatario = req.params.email;
-      console.log('emailDestinatario::::::::::::::', emailDestinatario);
+      ('emailDestinatario::::::::::::::', emailDestinatario);
       const unreadCount = await recadoService.countUnreadRecados(emailDestinatario);
-      console.log('unreadCount:::::::::::::::::', unreadCount);
+      ('unreadCount:::::::::::::::::', unreadCount);
       res.status(200).json({ unreadCount });
     } catch (error) {
       console.error('Error counting unread recados:', error);
@@ -78,7 +78,7 @@ class RecadoController {
   async forwardRecado(req, res) {
     try {
       const { recadoId, newRegistrant, newRecipient, comment } = req.body;
-      console.log('RECADOOOOO: ' + comment)
+      ('RECADOOOOO: ' + comment)
 
       if (!recadoId || !newRegistrant || !newRecipient) {
         return res.status(400).json({ message: 'ID do recado, novo registrante e novo destinatário são obrigatórios.' });
